@@ -12,7 +12,7 @@ const getNomeCompleto = (
 const Gato = () => {
     return (
         <Text style = {{color: 'black', fontSize: 20}}>
-            MIAAAU CARAJO! 
+            MIAAAU! 
             {getNomeCompleto('  fulano', 'da silva', 'sauro')} !
         </Text>
     )
