@@ -1,22 +1,12 @@
-import React from 'react';
-import { Text, TextInput, View } from 'react-native';
-import Login from './src/login/TelaLogin';
-import Cadastro from './src/login/TelaCadastro';
-import Atividade2 from './src/AtividadeAvaliativa/Atividade2';
-import Atividade1 from './src/AtividadeAvaliativa/Atividade1';
-import Atividade3 from './src/AtividadeAvaliativa/Atividade3';
+import * as React from 'react';
+import { NavigationContainer} from '@react-navigation/native';
+import { Text } from 'react-native';
+import HomeNavigator from './src/navigation/HomeNavigator';
 
-function App(): React.JSX.Element {
-  // return(
-  //   <Atividade1 titulo={'titBATATINHAulo'}/>
-  // );
-  // return(
-  //   <Atividade2/>
-  // );
-  return(
-    <Atividade3/>
-  )
-
+export default function App() {
+  return (
+    <NavigationContainer>
+      <HomeNavigator/>
+    </NavigationContainer>
+  );
 }
-
-export default App;

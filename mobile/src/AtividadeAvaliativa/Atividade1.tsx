@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Pressable, Image, Alert, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput} from 'react-native';
 
 type Props = {
     titulo: string;

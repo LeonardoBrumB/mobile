@@ -2,27 +2,28 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable, Image, Alert } from 'react-native';
 
 import auth from "@react-native-firebase/auth";
+import { LoginProps } from '../navigation/HomeNavigator';
 
-const Login = () => {
-    const [email, setEmail] = useState(''); 
-    const [senha, setSenha] = useState(''); 
+const Login = ({ navigation, route }: LoginProps) => {
+    const [email, setEmail] = useState('');
+    const [senha, setSenha] = useState('');
 
-    function logar() {
+    function logar({ }) {
         if (verificaCampos()) {
 
             auth()
                 .signInWithEmailAndPassword(email, senha)
                 .then(() => { Alert.alert('Logado com sucesso') })
-                .catch((error) => tratarErros( String(error) ))
+                .catch((error) => tratarErros(String(error)))
         }
     }
 
-    function verificaCampos(){
-        if (email == ''){
+    function verificaCampos() {
+        if (email == '') {
             Alert.alert("Email em branco", "Digite um email")
             return false;
         }
-        if (senha == ''){
+        if (senha == '') {
             Alert.alert("Senha em branco", "Digite uma senha")
             return false;
         }
@@ -30,15 +31,15 @@ const Login = () => {
         return true;
     }
 
-    function tratarErros(erro: string){
+    function tratarErros(erro: string) {
         console.log(erro);
-        if(erro.includes("[auth/invalid-email]")){
+        if (erro.includes("[auth/invalid-email]")) {
             Alert.alert("Email inválido", "Digite um email válido")
-        } else if(erro.includes("[ INVALID_LOGIN_CREDENTIALS ]")){
+        } else if (erro.includes("[ INVALID_LOGIN_CREDENTIALS ]")) {
             Alert.alert("Login ou senha incorretos", "")
-        } else if(erro.includes("[auth/invalid-credential]")){
+        } else if (erro.includes("[auth/invalid-credential]")) {
             Alert.alert("Login ou senha incorretos", "")
-        }else{
+        } else {
             Alert.alert("Erro", erro)
         }
     }
@@ -46,32 +47,38 @@ const Login = () => {
     return (
         <View style={styles.container}>
             <View style={styles.painel_imagem}>
-                <Image 
-                    style={styles.imagem} 
+                <Image
+                    style={styles.imagem}
                     source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png' }} />
             </View>
-            
+
             <View style={styles.container_login}>
                 <Text
                     style={styles.titulo_caixa_texto}>
-                    Login
+                    Email
                 </Text>
                 <TextInput
                     style={styles.caixa_texto}
-                    onChangeText={(text) => {setEmail(text)}}/>
+                    onChangeText={(text) => { setEmail(text) }} />
 
                 <Text
                     style={styles.titulo_caixa_texto}>
                     Senha
                 </Text>
                 <TextInput
-                    style={styles.caixa_texto} 
-                    onChangeText={(text) => {setSenha(text)}}/>
+                    style={styles.caixa_texto}
+                    onChangeText={(text) => { setSenha(text) }} />
 
                 <Pressable
-                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null] }
+                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
                     onPress={logar}>
                     <Text style={styles.desc_botao}>Entrar</Text>
+                </Pressable>
+
+                <Pressable
+                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
+                    onPress={() => { navigation.navigate('TelaCadastro')}}>
+                    <Text style={styles.desc_botao}>Cadastrar</Text>
                 </Pressable>
             </View>
         </View>
@@ -82,16 +89,19 @@ export default Login;
 
 const styles = StyleSheet.create({
     container: {
+        paddingTop: 10,
+        paddingBottom: 30,
         flex: 1,
-        backgroundColor: '#FFFACD'
+        backgroundColor: '#1c62be'
     },
     container_login: {
         flex: 2,
         alignItems: 'center'
     },
-    titulo_caixa_texto:{
+    titulo_caixa_texto: {
+        paddingTop: 10,
         fontSize: 25,
-        color: 'black'
+        color: 'black',
     },
     caixa_texto: {
         width: '70%',
@@ -103,7 +113,7 @@ const styles = StyleSheet.create({
     },
     botao: {
         justifyContent: 'center',
-        backgroundColor: 'green',
+        backgroundColor: 'blue',
         paddingVertical: 10,
         paddingHorizontal: 30,
         marginTop: 20,
@@ -114,13 +124,13 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     painel_imagem: {
-        flex:1,
-        alignItems:'center', 
-        justifyContent:'center'
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
-    imagem: { 
-        width: 200, 
-        height: 200, 
+    imagem: {
+        width: 200,
+        height: 200,
         resizeMode: "center"
     }
 });

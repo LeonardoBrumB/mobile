@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Pressable, Image, Alert, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput } from 'react-native';
 
 
 const Atividade3 = () => {
@@ -11,7 +11,7 @@ const Atividade3 = () => {
             <View style={styles.container_titulo}>
                 <Text
                     style={styles.titulo_caixa_texto}>
-                       {titulo} 
+                    {titulo}
                 </Text>
                 <TextInput
                     style={styles.caixa_texto}

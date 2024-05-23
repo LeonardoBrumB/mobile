@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet,View, Image,ScrollView} from 'react-native';
+import { StyleSheet, View, Image, ScrollView } from 'react-native';
 
 const Atividade2 = () => {
     const [titulo, setTitulo] = useState('');
