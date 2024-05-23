@@ -1,28 +1,37 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Pressable, Image, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Pressable, Image, Alert, ScrollViewComponent, ScrollView } from 'react-native';
+import { CadUsuarioProps } from '../navigation/HomeNavigator';
+import auth from "@react-native-firebase/auth"
 
-import auth from "@react-native-firebase/auth";
+const Cadastro = ({ navigation, route }: CadUsuarioProps) => {
+    const [email, setEmail] = useState('');
+    const [senha, setSenha] = useState('');
+    const [confSenha, setConfSenha] = useState('');
 
-const Login = () => {
-    const [email, setEmail] = useState(''); 
-    const [senha, setSenha] = useState(''); 
-
-    function logar() {
+    async function cadastro() {
         if (verificaCampos()) {
-
             auth()
-                .signInWithEmailAndPassword(email, senha)
-                .then(() => { Alert.alert('Logado com sucesso') })
-                .catch((error) => tratarErros( String(error) ))
+                .createUserWithEmailAndPassword(email, senha)
+                .then(() => {
+                    Alert.alert("conta",
+                        "cadastrado com sucesso!"
+                    )
+                    navigation.goBack();
+                })
+                .catch((error) => { tratarErros(String(error)) })
+                .finally(() => {
+                    // setIsCarregando(false)
+                });
         }
+        // setIsCarregando(false);
     }
 
-    function verificaCampos(){
-        if (email == ''){
+    function verificaCampos() {
+        if (email == '') {
             Alert.alert("Email em branco", "Digite um email")
             return false;
         }
-        if (senha == ''){
+        if (senha == '') {
             Alert.alert("Senha em branco", "Digite uma senha")
             return false;
         }
@@ -30,15 +39,11 @@ const Login = () => {
         return true;
     }
 
-    function tratarErros(erro: string){
+    function tratarErros(erro: string) {
         console.log(erro);
-        if(erro.includes("[auth/invalid-email]")){
+        if (erro.includes("")) {
             Alert.alert("Email inválido", "Digite um email válido")
-        } else if(erro.includes("[ INVALID_LOGIN_CREDENTIALS ]")){
-            Alert.alert("Login ou senha incorretos", "")
-        } else if(erro.includes("[auth/invalid-credential]")){
-            Alert.alert("Login ou senha incorretos", "")
-        }else{
+        } else {
             Alert.alert("Erro", erro)
         }
     }
@@ -46,52 +51,80 @@ const Login = () => {
     return (
         <View style={styles.container}>
             <View style={styles.painel_imagem}>
-                <Image 
-                    style={styles.imagem} 
+                <Image
+                    style={styles.imagem}
                     source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png' }} />
             </View>
-            
-            <View style={styles.container_login}>
+
+            <View style={styles.container_cadastro}>
+                {/* <Text
+                        style={styles.titulo_caixa_texto}>
+                        Nome completo
+                    </Text>
+                    <TextInput
+                        style={styles.caixa_texto}
+                    />
+                    <Text
+                        style={styles.titulo_caixa_texto}>
+                        Data de nascimento
+                    </Text>
+                    <TextInput
+                        style={styles.caixa_texto}
+                    /> */}
                 <Text
                     style={styles.titulo_caixa_texto}>
-                    Login
+                    Email
                 </Text>
                 <TextInput
                     style={styles.caixa_texto}
-                    onChangeText={(text) => {setEmail(text)}}/>
-
+                />
                 <Text
                     style={styles.titulo_caixa_texto}>
                     Senha
                 </Text>
                 <TextInput
-                    style={styles.caixa_texto} 
-                    onChangeText={(text) => {setSenha(text)}}/>
+                    style={styles.caixa_texto}
+                    onChangeText={(text) => { setSenha(text) }} />
+                <Text
+                    style={styles.titulo_caixa_texto}>
+                    Confirmar senha
+                </Text>
+                <TextInput
+                    style={styles.caixa_texto}
+                    onChangeText={(text) => { setSenha(text) }} />
 
                 <Pressable
-                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null] }
-                    onPress={logar}>
-                    <Text style={styles.desc_botao}>Entrar</Text>
+                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
+                    onPress={cadastro}>
+                    <Text style={styles.desc_botao}>Cadastrar</Text>
+                </Pressable>
+
+                <Pressable
+                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
+                    onPress={() => { navigation.navigate('TelaLogin') }}>
+                    <Text style={styles.desc_botao}>Logar</Text>
                 </Pressable>
             </View>
         </View>
     );
 }
 
-export default Login;
+export default Cadastro;
 
 const styles = StyleSheet.create({
     container: {
+        paddingTop: 10,
         flex: 1,
-        backgroundColor: '#FFFACD'
+        backgroundColor: '#1c62be'
     },
-    container_login: {
+    container_cadastro: {
         flex: 2,
         alignItems: 'center'
     },
-    titulo_caixa_texto:{
+    titulo_caixa_texto: {
+        paddingTop: 10,
         fontSize: 25,
-        color: 'black'
+        color: 'black',
     },
     caixa_texto: {
         width: '70%',
@@ -103,10 +136,10 @@ const styles = StyleSheet.create({
     },
     botao: {
         justifyContent: 'center',
-        backgroundColor: 'green',
+        backgroundColor: 'blue',
         paddingVertical: 10,
         paddingHorizontal: 30,
-        marginTop: 20,
+        marginTop: 30,
         borderRadius: 10
     },
     desc_botao: {
@@ -114,13 +147,13 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     painel_imagem: {
-        flex:1,
-        alignItems:'center', 
-        justifyContent:'center'
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
-    imagem: { 
-        width: 200, 
-        height: 200, 
+    imagem: {
+        width: 200,
+        height: 200,
         resizeMode: "center"
     }
 });
