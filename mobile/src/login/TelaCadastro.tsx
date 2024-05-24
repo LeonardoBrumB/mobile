@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable, Image, Alert, ScrollViewComponent, ScrollView } from 'react-native';
 import { CadUsuarioProps } from '../navigation/HomeNavigator';
 import auth from "@react-native-firebase/auth"
+import Carregamento from '../navigation/Carregamento';
 
 const Cadastro = ({ navigation, route }: CadUsuarioProps) => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [confSenha, setConfSenha] = useState('');
+    const [isCarregando, setIsCarregando] = useState('');
 
     async function cadastro() {
         if (verificaCampos()) {
@@ -20,13 +22,15 @@ const Cadastro = ({ navigation, route }: CadUsuarioProps) => {
                 })
                 .catch((error) => { tratarErros(String(error)) })
                 .finally(() => {
-                    // setIsCarregando(false)
+                    setIsCarregando(false)
                 });
         }
-        // setIsCarregando(false);
+        setIsCarregando(false);
     }
 
     function verificaCampos() {
+        let resultado = true;
+
         if (email == '') {
             Alert.alert("Email em branco", "Digite um email")
             return false;
@@ -35,14 +39,31 @@ const Cadastro = ({ navigation, route }: CadUsuarioProps) => {
             Alert.alert("Senha em branco", "Digite uma senha")
             return false;
         }
+        if (confSenha == '') {
+            Alert.alert("Comfirmação de senha em branco!",
+                "Digite a confirmação de senha"
+            )
+            return false;
+        }
+        if (senha != confSenha) {
+            Alert.alert("Comfirmação de senha em branco!",
+                "Digite a confirmação de senha"
+            )
+            return false;
+        }
 
         return true;
     }
 
     function tratarErros(erro: string) {
         console.log(erro);
-        if (erro.includes("")) {
+        if (erro.includes("[auth/invalid-email]")) {
             Alert.alert("Email inválido", "Digite um email válido")
+        } else if (erro.includes("[auth/weak-password]")) {
+            Alert.alert("Senha fraca", "A senha deve conter no mínimo 6 dígitos.")
+        }
+        else if (erro.includes("[auth/email-already-in-use]")) {
+            Alert.alert("email em uso", "O email inserido já foi cadastrado em outra conta.")
         } else {
             Alert.alert("Erro", erro)
         }
@@ -50,6 +71,7 @@ const Cadastro = ({ navigation, route }: CadUsuarioProps) => {
 
     return (
         <View style={styles.container}>
+            <Carregamento isCarregando={isCarregando} />
             <View style={styles.painel_imagem}>
                 <Image
                     style={styles.imagem}
@@ -57,20 +79,6 @@ const Cadastro = ({ navigation, route }: CadUsuarioProps) => {
             </View>
 
             <View style={styles.container_cadastro}>
-                {/* <Text
-                        style={styles.titulo_caixa_texto}>
-                        Nome completo
-                    </Text>
-                    <TextInput
-                        style={styles.caixa_texto}
-                    />
-                    <Text
-                        style={styles.titulo_caixa_texto}>
-                        Data de nascimento
-                    </Text>
-                    <TextInput
-                        style={styles.caixa_texto}
-                    /> */}
                 <Text
                     style={styles.titulo_caixa_texto}>
                     Email
@@ -84,6 +92,7 @@ const Cadastro = ({ navigation, route }: CadUsuarioProps) => {
                 </Text>
                 <TextInput
                     style={styles.caixa_texto}
+                    secureTextEntry={true}
                     onChangeText={(text) => { setSenha(text) }} />
                 <Text
                     style={styles.titulo_caixa_texto}>
@@ -91,11 +100,13 @@ const Cadastro = ({ navigation, route }: CadUsuarioProps) => {
                 </Text>
                 <TextInput
                     style={styles.caixa_texto}
-                    onChangeText={(text) => { setSenha(text) }} />
+                    secureTextEntry={true}
+                    onChangeText={(text) => { setConfSenha(text) }} />
 
                 <Pressable
                     style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                    onPress={cadastro}>
+                    onPress={() => cadastro()}
+                    disabled={isCarregando}>
                     <Text style={styles.desc_botao}>Cadastrar</Text>
                 </Pressable>
 
