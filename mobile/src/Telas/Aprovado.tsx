@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, TextInput } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { AprovadoProps } from '../navigation/HomeNavigator';
 
 function media(nota1: number, nota2: number) {
@@ -12,40 +12,42 @@ function resultado(media: number) {
 
 const Aprovado = ({ navigation, route }: AprovadoProps) => {
     return (
-        <>
-            <Text style={styles.titulo_caixa_texto}>
-                Nome:
-            </Text>
-            <TextInput
-                style={styles.caixa_texto}>
+        <View style={styles.container}>
+            <View style={styles.container_login}>
+                <Text style={styles.titulo_caixa_texto}>
+                    Nome:
+                </Text>
+                <TextInput
+                    style={styles.caixa_texto}>
 
-            </TextInput>
-            <Text style={styles.titulo_caixa_texto}>
-                Nota 1:
-            </Text>
-            <TextInput
-                style={styles.caixa_texto}>
+                </TextInput>
+                <Text style={styles.titulo_caixa_texto}>
+                    Nota 1:
+                </Text>
+                <TextInput
+                    style={styles.caixa_texto}>
 
-            </TextInput>
-            <Text style={styles.titulo_caixa_texto}>
-                Nota 2:
-            </Text>
-            <TextInput
-                style={styles.caixa_texto}>
+                </TextInput>
+                <Text style={styles.titulo_caixa_texto}>
+                    Nota 2:
+                </Text>
+                <TextInput
+                    style={styles.caixa_texto}>
 
-            </TextInput>
-            <Text style={styles.titulo_caixa_texto}>
-                Média: {("")}
-            </Text>
-            <Text style={styles.titulo_caixa_texto}>
-                {/* Resultado: {resultado(media("props.nota1, props.nota2"))} */}
-            </Text>
-            <Pressable
-                style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                onPress={() => { navigation.navigate('TelaPrincipal') }}>
-                <Text style={styles.desc_botao}>Calcular média</Text>
-            </Pressable>
-        </>
+                </TextInput>
+                <Text style={styles.titulo_caixa_texto}>
+                    Média: {("")}
+                </Text>
+                <Text style={styles.titulo_caixa_texto}>
+                    {/* Resultado: {resultado(media("props.nota1, props.nota2"))} */}
+                </Text>
+                <Pressable
+                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
+                    onPress={() => { navigation.navigate('TelaPrincipal') }}>
+                    <Text style={styles.desc_botao}>Calcular média</Text>
+                </Pressable>
+            </View>
+        </View>
     )
 };
 

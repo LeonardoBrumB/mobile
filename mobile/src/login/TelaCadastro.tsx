@@ -8,7 +8,7 @@ const Cadastro = ({ navigation, route }: CadUsuarioProps) => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [confSenha, setConfSenha] = useState('');
-    const [isCarregando, setIsCarregando] = useState('');
+    const [isCarregando, setIsCarregando] = useState(false);
 
     async function cadastro() {
         if (verificaCampos()) {
@@ -85,7 +85,7 @@ const Cadastro = ({ navigation, route }: CadUsuarioProps) => {
                 </Text>
                 <TextInput
                     style={styles.caixa_texto}
-                />
+                    onChangeText={(text) => { setEmail(text) }} />
                 <Text
                     style={styles.titulo_caixa_texto}>
                     Senha
