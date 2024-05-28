@@ -8,15 +8,12 @@ import Carregamento from "../navigation/Carregamento";
 type ItemNotaProps = {
     numero: number,
     nota: INotas;
+    onAlterar: (id: string) => void;
+    onDeletar: (id: string) => void;
 }
 
 const ItemNota = (props: ItemNotaProps) => {
-    function deletarNota(id: string) {
-        //
-    }
-    function alterarNota(id: string) {
-        //
-    }
+
 
     return (
         <View style={styles.card}>
@@ -27,17 +24,17 @@ const ItemNota = (props: ItemNotaProps) => {
                 <Text style={{ fontSize: 20 }}>{props.nota.descricao}</Text>
             </View>
 
-            <View style={styles.botao_alterar}>
-                <Pressable onPress={() => alterarNota(props.nota.id)}>
-                    <Text style={styles.texto_botao_card}>
+            <View style={styles.botao_alt}>
+                <Pressable onPress={() => props.onAlterar(props.nota.id)}>
+                    <Text style={styles.desc_botao}>
                         A
                     </Text>
                 </Pressable>
             </View>
 
-            <View style={styles.botao_deletar}>
-                <Pressable onPress={() => deletarNota(props.nota.id)}>
-                    <Text style={styles.texto_botao_card}>
+            <View style={styles.botao_del}>
+                <Pressable onPress={() => props.onDeletar(props.nota.id)}>
+                    <Text style={styles.desc_botao}>
                         X
                     </Text>
                 </Pressable>
@@ -71,5 +68,76 @@ const TelaConNotas = ({ navigation, route }: ConNotasProps) => {
 
 
     }, []);
+
+    function deletarNota(id: string) {
+        navigation.navigate('TelaAltNota', { id: id })
+    }
+    function alterarNota(id: string) {
+        //
+    }
+
+    return (
+        <View style={styles.container}>
+            <Carregamento isCarregando={isCarregando} />
+
+            <Text style={styles.titulo_caixa_texto}>Listagem de Notas</Text>
+            <FlatList
+                data={notas}
+                renderItem={{ info } =>
+            <ItemNota
+                numero={info.index}
+                nota={info.item}
+                onAlterar={alterarNota}
+                onDeletar={deletarNota} />}
+            ></FlatList>
+
+
+        </View >
+    );
 }
+
+export default TelaConNotas;
+
+const styles = StyleSheet.create({
+    container: {
+        paddingTop: 20,
+        flex: 1,
+        backgroundColor: '#1c62be',
+        paddingBottom: 537,
+    },
+    titulo_caixa_texto: {
+        paddingTop: 20,
+        paddingBottom: 30,
+        fontSize: 45,
+        color: 'black',
+        textAlign: 'center',
+    },
+    caixa_texto: {
+        width: '70%',
+        color: 'black',
+        borderWidth: 1,
+        borderRadius: 4,
+        margin: 3,
+        backgroundColor: 'white'
+    },
+    botao_alt: {
+        backgroundColor: 'yellow',
+        width: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    botao_del: {
+        backgroundColor: 'yellow',
+        paddingVertical: 20,
+        marginTop: 20,
+        borderRadius: 10,
+        marginHorizontal: 70,
+    },
+    desc_botao: {
+        fontWeight: 'bold',
+        fontSize: 40,
+        color: 'black',
+    },
+});
+
 
