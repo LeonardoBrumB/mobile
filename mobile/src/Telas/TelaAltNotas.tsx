@@ -4,9 +4,8 @@ import firestore from '@react-native-firebase/firestore';
 import { INotas } from "../Model/INotas";
 import Carregamento from "../navigation/Carregamento";
 import { AltNotasProps } from "../navigation/HomeNavigator";
-import { createTestScheduler } from "jest";
 
-const TelaAltNota = ({ navigation, route }: AltNotaProps) => {
+const TelaAltNota = ({ navigation, route }: AltNotasProps) => {
     const [id,] = useState(route.params.id);
     const [titulo, setTitulo] = useState('');
     const [descricao, setDescricao] = useState('');
@@ -79,7 +78,7 @@ const TelaAltNota = ({ navigation, route }: AltNotaProps) => {
 export default TelaAltNota;
 
 const styles = StyleSheet.create({
-    conatiner: {
+    container: {
         flex: 1,
         backgroundColor: '#FFFACD',
         alignItems: 'center',
