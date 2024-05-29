@@ -19,7 +19,7 @@ const Aprovado = ({ navigation, route }: AprovadoProps) => {
                 </Text>
                 <TextInput
                     style={styles.caixa_texto}>
-
+                    
                 </TextInput>
                 <Text style={styles.titulo_caixa_texto}>
                     Nota 1:

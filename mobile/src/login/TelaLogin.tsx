@@ -44,6 +44,18 @@ const Login = ({ navigation, route }: LoginProps) => {
         }
     }
 
+    function redefinirSenha() {
+        if (email == '') {
+            Alert.alert('Email em branco', 'Preencha o email')
+            return
+        }
+
+        auth()
+            .sendPasswordResetEmail(email)
+            .then(() => Alert.alert('redefinir senha', 'Enviamos um email para você redefinir sua senha'))
+            .catch((error) => console.log(error))
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.painel_imagem}>
@@ -78,8 +90,14 @@ const Login = ({ navigation, route }: LoginProps) => {
 
                 <Pressable
                     style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                    onPress={() => { navigation.navigate('TelaCadastro')}}>
+                    onPress={() => { navigation.navigate('TelaCadastro') }}>
                     <Text style={styles.desc_botao}>Cadastrar</Text>
+                </Pressable>
+
+                <Pressable
+                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
+                    onPress={() => { redefinirSenha() }}>
+                    <Text style={styles.desc_botao}>Esqueci minha senha</Text>
                 </Pressable>
             </View>
         </View>

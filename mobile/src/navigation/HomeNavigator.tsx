@@ -14,8 +14,10 @@ type RootStackParamList = {
     Aprovado: undefined;
     CadMedia: undefined;
     TelaCadNota: undefined,
-    TelaConNotas: { id: string },
+    TelaConNotas: undefined,
+    TelaAltNotas: { id: string },
 }
+
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

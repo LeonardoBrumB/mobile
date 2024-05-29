@@ -70,10 +70,18 @@ const TelaConNotas = ({ navigation, route }: ConNotasProps) => {
     }, []);
 
     function deletarNota(id: string) {
-        navigation.navigate('TelaAltNota', { id: id })
+        setIsCarregando(true);
+
+        firestore()
+            .collection('notas')
+            .doc(id)
+            .delete()
+            .then(() => {
+                Alert.alert('nota', 'Removido com sucesso')
+            })
     }
     function alterarNota(id: string) {
-        //
+        navigation.navigate('TelaAltNotas', { id: id });
     }
 
     return (
@@ -83,12 +91,12 @@ const TelaConNotas = ({ navigation, route }: ConNotasProps) => {
             <Text style={styles.titulo_caixa_texto}>Listagem de Notas</Text>
             <FlatList
                 data={notas}
-                renderItem={{ info } =>
-            <ItemNota
-                numero={info.index}
-                nota={info.item}
-                onAlterar={alterarNota}
-                onDeletar={deletarNota} />}
+                renderItem={(info) =>
+                    <ItemNota
+                        numero={info.index}
+                        nota={info.item}
+                        onAlterar={alterarNota}
+                        onDeletar={deletarNota} />}
             ></FlatList>
 
 
@@ -112,13 +120,17 @@ const styles = StyleSheet.create({
         color: 'black',
         textAlign: 'center',
     },
-    caixa_texto: {
-        width: '70%',
-        color: 'black',
-        borderWidth: 1,
-        borderRadius: 4,
-        margin: 3,
-        backgroundColor: 'white'
+    card: {
+        borderWidth: 2,
+        borderColor: 'grey',
+        margin: 5,
+        borderRadius: 10,
+        padding: 3,
+        flexDirection: 'row',
+        backgroundColor: 'white',
+    },
+    dados_card: {
+        flex: 1,
     },
     botao_alt: {
         backgroundColor: 'yellow',
