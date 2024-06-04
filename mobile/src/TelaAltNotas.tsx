@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import firestore from "@react-native-firebase/firestore";
-import { INotas } from "../Model/Cliente";
+import { INotas } from "./Model/Cliente";
 import Carregamento from "../Carregamento";
-import { AltNotaProps } from "../navigation/HomeNavigator";
+import { AltNotaProps } from "./navigation/HomeNavigator";
 
 
 const TelaAltNota = ({ navigation, route }: AltNotaProps) => {

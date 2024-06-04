@@ -3,8 +3,9 @@ import { Alert, Pressable, FlatList, StyleSheet, Text, View, ScrollView } from "
 
 import firestore from "@react-native-firebase/firestore";
 import { Cliente } from "../Model/Cliente";
-import { ConsCliProps } from "../navigation/HomeNavigator";
+import { ConsAtendProps } from "../navigation/HomeNavigator";
 import Carregamento from "../navigation/Carregamento";
+import { Atendimento } from "../Model/Atendimento";
 
 
 
@@ -23,29 +24,29 @@ import Carregamento from "../navigation/Carregamento";
 
 
 
-type ClienteProps = {
+type AtendimentoProps = {
     numero: number;
-    cliente: Cliente;
+    atendimento: Atendimento;
     onAlterar: (id: string) => void;
     onDeletar: (id: string) => void;
     onInform: (id: string) => void;
 }
 
-const ItemCliente = (props: ClienteProps) => {
+const ItemAtendimento = (props: AtendimentoProps) => {
 
     return (
         <ScrollView>
             <View style={styles.card}>
                 <View style={styles.dados_card}>
                     <Text style={{ fontSize: 35 }}>
-                        {props.numero + 1 + ' - ' + props.cliente.nome}
+                        {props.numero + 1 + ' - ' + props.atendimento.nome}
                     </Text>
-                    <Text style={{ fontSize: 20 }}>{props.cliente.cpf}</Text>
+                    <Text style={{ fontSize: 20 }}>{props.atendimento.cpf}</Text>
                 </View>
 
                 <View style={styles.botao_info}>
                     <Pressable
-                        onPress={() => props.onInform(props.cliente.id!)}>
+                        onPress={() => props.onInform(props.atendimento.id!)}>
                         <Text style={styles.texto_botao_card}>
                             i
                         </Text>
@@ -53,7 +54,7 @@ const ItemCliente = (props: ClienteProps) => {
                 </View>
                 <View style={styles.botao_alterar}>
                     <Pressable
-                        onPress={() => props.onAlterar(props.cliente.id!)}>
+                        onPress={() => props.onAlterar(props.atendimento.id!)}>
                         <Text style={styles.texto_botao_card}>
                             A
                         </Text>
@@ -63,7 +64,7 @@ const ItemCliente = (props: ClienteProps) => {
                 <View style={styles.botao_deletar}>
 
                     <Pressable
-                        onPress={() => props.onDeletar(props.cliente.id!)}>
+                        onPress={() => props.onDeletar(props.atendimento.id!)}>
                         <Text style={styles.texto_botao_card}>
                             X
                         </Text>
@@ -75,15 +76,15 @@ const ItemCliente = (props: ClienteProps) => {
     );
 }
 
-const TelaConsCli = ({ navigation, route }: ConsCliProps) => {
-    const [cliente, setCliente] = useState([] as Cliente[]);
+const TelaConsCli = ({ navigation, route }: ConsAtendProps) => {
+    const [atendimento, setAtendimento] = useState([] as Atendimento[]);
     const [isCarregando, setIsCarregando] = useState(false);
 
     useEffect(() => {
         setIsCarregando(true);
 
         const subscribe = firestore()
-            .collection('cliente')
+            .collection('atendimento')
             .onSnapshot(querySnapshot => {
                 const data = querySnapshot.docs.map(doc => {
 
@@ -92,33 +93,33 @@ const TelaConsCli = ({ navigation, route }: ConsCliProps) => {
                         ...doc.data()
                     }
 
-                }) as Cliente[];
+                }) as Atendimento[];
 
-                setCliente(data);
+                setAtendimento(data);
                 setIsCarregando(false);
             });
 
         return () => subscribe();
     }, []);
 
-    function alterarCliente(id: string) {
-        navigation.navigate("TelaAltCli", { id: id })
+    function alterarAtendimeto(id: string) {
+        navigation.navigate("TelaAltAtend", { id: id })
     }
-    function infoCliente(id: string) {
-        navigation.navigate("TelaInfoCli", { id: id })
+    function infoAtendimeto(id: string) {
+        navigation.navigate("TelaInfoAted", { id: id })
     }
 
-    function deletarCliente(id: string) {
+    function deletarAtendimento(id: string) {
 
-        if (confirm('realmente deseja deletar o cliente?') == true) {
+        if (confirm('realmente deseja deletar o atendimento?') == true) {
             setIsCarregando(true);
 
             firestore()
-                .collection('cliente')
+                .collection('atendimento')
                 .doc(id)
                 .delete()
                 .then(() => {
-                    Alert.alert("Cliente removido com sucesso")
+                    Alert.alert("atendimento removido com sucesso")
                 })
                 .catch((error) => console.log(error))
                 .finally(() => setIsCarregando(false));
@@ -132,16 +133,16 @@ const TelaConsCli = ({ navigation, route }: ConsCliProps) => {
         <View style={styles.container}>
             <Carregamento isCarregando={isCarregando} />
 
-            <Text style={styles.titulo}>Listagem de clientes</Text>
+            <Text style={styles.titulo}>Listagem de atendimentos</Text>
             <FlatList
-                data={cliente}
+                data={atendimento}
                 renderItem={(info) =>
-                    <ItemCliente
+                    <ItemAtendimento
                         numero={info.index}
-                        cliente={info.item}
-                        onAlterar={alterarCliente}
-                        onDeletar={deletarCliente}
-                        onInform={infoCliente} />}>
+                        atendimento={info.item}
+                        onAlterar={alterarAtendimeto}
+                        onDeletar={deletarAtendimento}
+                        onInform={infoAtendimeto} />}>
 
             </FlatList>
         </View>

@@ -8,6 +8,7 @@ import firestore from "@react-native-firebase/firestore";
 
 
 const TelaCadCli = ({ navigation, route }: CadCliProps) => {
+    const [id,] = useState('');
     const [nome, setNome] = useState('');
     const [cpf, setCpf] = useState('');
     const [rua, setRua] = useState('');
@@ -24,6 +25,7 @@ const TelaCadCli = ({ navigation, route }: CadCliProps) => {
 
         if (verificaCampos()) {
             let cliente = {
+                id: id,
                 nome: nome,
                 cpf: cpf,
                 rua: rua,
@@ -94,6 +96,31 @@ const TelaCadCli = ({ navigation, route }: CadCliProps) => {
         return true;
     }
 
+    function formataCPF(cpf) {
+        const cpfAtual = cpf.value
+
+        let cpfAtualizado;
+
+        cpfAtualizado = cpfAtual.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,
+            function (regex, argumento1, argumento2, argumento3, argumento4) {
+                return argumento1 + '.' + argumento2 + '.' + argumento3 + '-' + argumento4;
+            })
+        cpf = cpfAtualizado;
+    }
+
+    function formataData(dataNasc) {
+        const dataAtual = dataNasc.value
+
+        let dataAtualizada;
+
+        dataAtualizada = dataAtual.replace(/(\d{2})(\d{2})(\d{4})/,
+            function (regex, argumento1, argumento2, argumento3) {
+                return argumento1 + '/' + argumento2 + '/' + argumento3;
+            })
+        dataNasc = dataAtualizada;
+    }
+
+
     return (
         <ScrollView>
             <View style={styles.container_header}>
@@ -117,85 +144,87 @@ const TelaCadCli = ({ navigation, route }: CadCliProps) => {
                     <TextInput style={styles.caixa_texto}
                         onChangeText={(text) => { setCpf(text.toString()) }}
                         maxLength={11}
-                        keyboardType='numeric'>
+                        keyboardType='numeric' />
+                    {formataCPF(cpf)}
 
-                    </TextInput>
+                </TextInput>
 
-                    <Text style={styles.titulo_caixa_texto}>
-                        Rua:
-                    </Text>
-                    <TextInput style={styles.caixa_texto}
-                        onChangeText={(text) => { setRua(text) }}>
+                <Text style={styles.titulo_caixa_texto}>
+                    Rua:
+                </Text>
+                <TextInput style={styles.caixa_texto}
+                    onChangeText={(text) => { setRua(text) }}>
 
-                    </TextInput>
+                </TextInput>
 
-                    <Text style={styles.titulo_caixa_texto}>
-                        Número:
-                    </Text>
-                    <TextInput style={styles.caixa_texto}
-                        onChangeText={(text) => { setNumero(text.toString()) }}
-                        keyboardType='numeric'>
+                <Text style={styles.titulo_caixa_texto}>
+                    Número:
+                </Text>
+                <TextInput style={styles.caixa_texto}
+                    onChangeText={(text) => { setNumero(text.toString()) }}
+                    keyboardType='numeric'>
 
-                    </TextInput>
+                </TextInput>
 
-                    <Text style={styles.titulo_caixa_texto}>
-                        Bairro:
-                    </Text>
-                    <TextInput style={styles.caixa_texto}
-                        onChangeText={(text) => { setBairro(text) }}>
+                <Text style={styles.titulo_caixa_texto}>
+                    Bairro:
+                </Text>
+                <TextInput style={styles.caixa_texto}
+                    onChangeText={(text) => { setBairro(text) }}>
 
-                    </TextInput>
+                </TextInput>
 
-                    <Text style={styles.titulo_caixa_texto}>
-                        Complemento:
-                    </Text>
-                    <TextInput style={styles.caixa_texto}
-                        onChangeText={(text) => { setComplemento(text) }}>
+                <Text style={styles.titulo_caixa_texto}>
+                    Complemento:
+                </Text>
+                <TextInput style={styles.caixa_texto}
+                    onChangeText={(text) => { setComplemento(text) }}>
 
-                    </TextInput>
+                </TextInput>
 
-                    <Text style={styles.titulo_caixa_texto}>
-                        Cidade:
-                    </Text>
-                    <TextInput style={styles.caixa_texto}
-                        onChangeText={(text) => { setCidade(text) }}>
+                <Text style={styles.titulo_caixa_texto}>
+                    Cidade:
+                </Text>
+                <TextInput style={styles.caixa_texto}
+                    onChangeText={(text) => { setCidade(text) }}>
 
-                    </TextInput>
+                </TextInput>
 
-                    <Text style={styles.titulo_caixa_texto}>
-                        Estado:
-                    </Text>
-                    <TextInput style={styles.caixa_texto}
-                        onChangeText={(text) => { setEstado(text) }}>
+                <Text style={styles.titulo_caixa_texto}>
+                    Estado:
+                </Text>
+                <TextInput style={styles.caixa_texto}
+                    onChangeText={(text) => { setEstado(text) }}>
 
-                    </TextInput>
+                </TextInput>
 
-                    <Text style={styles.titulo_caixa_texto}>
-                        Data de nascimento:
-                    </Text>
-                    <TextInput style={styles.caixa_texto}
-                        onChangeText={(text) => { setDataNasc(text.toString()) }}
-                        maxLength={8}
-                        keyboardType='numeric'>
+                <Text style={styles.titulo_caixa_texto}>
+                    Data de nascimento:
+                </Text>
+                <TextInput style={styles.caixa_texto}
+                    onChangeText={(text) => { setDataNasc(text.toString()) }}
+                    maxLength={8}
+                    keyboardType='numeric'>
+                        {formataData(dataNasc)}
 
-                    </TextInput>
-                </View>
-                <View style={styles.caixa_botao}>
-                    <Pressable
-                        style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                        onPress={() => cadastrar()}
-                        disabled={isCarregando}>
-                        <Text style={styles.desc_botao}>Cadastrar</Text>
-                    </Pressable>
-
-                    <Pressable
-                        style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                        onPress={() => { navigation.navigate('TelaPrincipal') }}>
-                        <Text style={styles.desc_botao}>voltar</Text>
-                    </Pressable>
-                </View>
+                </TextInput>
             </View>
-        </ScrollView>
+            <View style={styles.caixa_botao}>
+                <Pressable
+                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
+                    onPress={() => cadastrar()}
+                    disabled={isCarregando}>
+                    <Text style={styles.desc_botao}>Cadastrar</Text>
+                </Pressable>
+
+                <Pressable
+                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
+                    onPress={() => { navigation.navigate('TelaPrincipal') }}>
+                    <Text style={styles.desc_botao}>voltar</Text>
+                </Pressable>
+            </View>
+        </View>
+        </ScrollView >
     );
 }
 
