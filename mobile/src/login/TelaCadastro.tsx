@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable, Image, Alert, ScrollViewComponent, ScrollView } from 'react-native';
-import { CadUsuarioProps } from '../navigation/HomeNavigator';
+import { CadProps } from '../navigation/HomeNavigator';
 import auth from "@react-native-firebase/auth"
 import Carregamento from '../navigation/Carregamento';
 
-const Cadastro = ({ navigation, route }: CadUsuarioProps) => {
+const Cadastro = ({ navigation, route }: CadProps) => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [confSenha, setConfSenha] = useState('');
@@ -35,6 +35,10 @@ const Cadastro = ({ navigation, route }: CadUsuarioProps) => {
             Alert.alert("Email em branco", "Digite um email")
             return false;
         }
+
+        //
+
+
         if (senha == '') {
             Alert.alert("Senha em branco", "Digite uma senha")
             return false;
@@ -75,7 +79,7 @@ const Cadastro = ({ navigation, route }: CadUsuarioProps) => {
             <View style={styles.painel_imagem}>
                 <Image
                     style={styles.imagem}
-                    source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png' }} />
+                    source={{ uri: '//////////////' }} />
             </View>
 
             <View style={styles.container_cadastro}>

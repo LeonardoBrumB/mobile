@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import firestore from '@react-native-firebase/firestore';
-import { INotas } from "../Model/INotas";
-import Carregamento from "../navigation/Carregamento";
-import { AltNotasProps } from "../navigation/HomeNavigator";
 
-const TelaAltNota = ({ navigation, route }: AltNotasProps) => {
+import firestore from "@react-native-firebase/firestore";
+import { INotas } from "../Model/Cliente";
+import Carregamento from "../Carregamento";
+import { AltNotaProps } from "../navigation/HomeNavigator";
+
+
+const TelaAltNota = ({ navigation, route }: AltNotaProps) => {
     const [id,] = useState(route.params.id);
     const [titulo, setTitulo] = useState('');
     const [descricao, setDescricao] = useState('');
@@ -28,6 +30,10 @@ const TelaAltNota = ({ navigation, route }: AltNotasProps) => {
         setIsCarregando(false);
     };
 
+    useEffect(() => {
+        carregar();
+    }, []);
+
     function alterar() {
         setIsCarregando(true);
 
@@ -35,10 +41,12 @@ const TelaAltNota = ({ navigation, route }: AltNotasProps) => {
             .collection('notas')
             .doc(id)
             .update({
-                titulo, descricao, created_at: firestore.FieldValue.serverTimestamp()
+                titulo,
+                descricao,
+                created_at: firestore.FieldValue.serverTimestamp()
             })
             .then(() => {
-                Alert.alert('nota', 'Alterada com sucesso')
+                Alert.alert("Nota", "Alterada com sucesso")
                 navigation.goBack();
             })
             .catch((error) => console.log(error))
@@ -46,33 +54,41 @@ const TelaAltNota = ({ navigation, route }: AltNotasProps) => {
     }
 
     return (
-        <view style={styles.container}>
+        <View
+            style={styles.container}>
             <Carregamento isCarregando={isCarregando} />
 
-            <Text style={styles.desc_caixa_texto}>
+            <Text style={styles.titulo}>Alterar Nota</Text>
+
+            <Text
+                style={styles.desc_caixa_texto}>
                 Título
             </Text>
-            <TextInput style={styles.caixa_texto}
+            <TextInput
+                style={styles.caixa_texto}
                 value={titulo}
                 onChangeText={(text) => { setTitulo(text) }} />
-            <Text style={styles.desc_caixa_texto}>
-                Descricao
+
+            <Text
+                style={styles.desc_caixa_texto}>
+                Descrição
             </Text>
-            <TextInput multiline
+            <TextInput
+                multiline
                 numberOfLines={4}
                 maxLength={100}
                 style={styles.caixa_texto}
                 value={descricao}
                 onChangeText={(text) => { setDescricao(text) }} />
-            <Pressable style={styles.botao}
+
+            <Pressable
+                style={styles.botao}
                 onPress={() => alterar()}
-                disabled={isCarregando}
-            >Alterar
+                disabled={isCarregando}>
+                <Text style={styles.desc_botao}>Alterar</Text>
             </Pressable>
-
-        </view>
+        </View>
     );
-
 }
 
 export default TelaAltNota;
@@ -81,13 +97,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FFFACD',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     titulo: {
         fontSize: 40,
         textAlign: 'center',
         color: 'black',
-        marginBottom: 10,
+        marginBottom: 10
     },
     caixa_texto: {
         width: '80%',
@@ -95,10 +111,10 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 4,
         margin: 3,
-        backgroundColor: 'white',
+        backgroundColor: 'white'
     },
     desc_caixa_texto: {
-        fontSize: 18,
+        fontSize: 18
     },
     botao: {
         justifyContent: 'center',
@@ -107,10 +123,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'green',
         paddingVertical: 10,
         paddingHorizontal: 30,
-        margin: 10,
+        margin: 10
     },
     desc_botao: {
         fontSize: 25,
-        color: 'white',
-    }
-})
+        color: 'white'
+    },
+});

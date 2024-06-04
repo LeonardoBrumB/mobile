@@ -61,7 +61,7 @@ const Login = ({ navigation, route }: LoginProps) => {
             <View style={styles.painel_imagem}>
                 <Image
                     style={styles.imagem}
-                    source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png' }} />
+                    source={{ uri: '////////////' }} />
             </View>
 
             <View style={styles.container_login}>
@@ -95,9 +95,9 @@ const Login = ({ navigation, route }: LoginProps) => {
                 </Pressable>
 
                 <Pressable
-                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
+                    style={(state) => [styles.botao_es, state.pressed ? { opacity: 0.5 } : null]}
                     onPress={() => { redefinirSenha() }}>
-                    <Text style={styles.desc_botao}>Esqueci minha senha</Text>
+                    <Text style={styles.desc_botao_es}>Esqueci minha senha</Text>
                 </Pressable>
             </View>
         </View>
@@ -135,12 +135,24 @@ const styles = StyleSheet.create({
         backgroundColor: 'blue',
         paddingVertical: 10,
         paddingHorizontal: 30,
-        marginTop: 20,
+        marginTop: 25,
+        borderRadius: 10
+    },
+    botao_es: {
+        justifyContent: 'center',
+        backgroundColor: '#1c62be',
+        paddingVertical: 10,
+        paddingHorizontal: 30,
+        marginTop: 40,
         borderRadius: 10
     },
     desc_botao: {
         fontSize: 20,
         color: 'white'
+    },
+    desc_botao_es: {
+        fontSize: 20,
+        color: 'black'
     },
     painel_imagem: {
         flex: 1,
@@ -148,7 +160,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     imagem: {
-        width: 200,
+        width: 270,
         height: 200,
         resizeMode: "center"
     }
