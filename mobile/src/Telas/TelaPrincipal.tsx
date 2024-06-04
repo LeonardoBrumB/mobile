@@ -7,22 +7,15 @@ const TelaPrincipal = ({ navigation, route }: PrincipalProps) => {
     return (
         <ScrollView>
             <View style={styles.container_header}>
-                {/* <View style={styles.painel_imagem}>
-                    <Image
-                        style={styles.imagem}
-                        source={{ uri: '//////////////' }} />
-                </View> */}
                 <Text style={styles.titulo}>
                     Título
                 </Text>
             </View>
             <View style={styles.container}>
-
-
                 <Pressable
                     style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                    onPress={() => { navigation.navigate('TelaCadAtend') }}>
-                    <Text style={styles.desc_botao}>Cadastrar Atendimento</Text>
+                    onPress={() => { navigation.navigate('TelaCadCli') }}>
+                    <Text style={styles.desc_botao}>Cadastrar Cliente</Text>
                 </Pressable>
 
                 <Pressable
@@ -33,8 +26,8 @@ const TelaPrincipal = ({ navigation, route }: PrincipalProps) => {
 
                 <Pressable
                     style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                    onPress={() => { navigation.navigate('TelaCadCli') }}>
-                    <Text style={styles.desc_botao}>Cadastrar Cliente</Text>
+                    onPress={() => { navigation.navigate('TelaCadAtend') }}>
+                    <Text style={styles.desc_botao}>Cadastrar Atendimento</Text>
                 </Pressable>
             </View>
         </ScrollView>
@@ -73,14 +66,4 @@ const styles = StyleSheet.create({
         fontSize: 25,
         color: 'white'
     },
-    painel_imagem: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    imagem: {
-        width: 200,
-        height: 200,
-        resizeMode: "center"
-    }
 });

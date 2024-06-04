@@ -1,10 +1,5 @@
-import React from 'react';
-import {
-    FlatList,
-    StyleSheet,
-    Text,
-    View
-} from 'react-native';
+import React from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 
 type Animal = {
     nome: string,
@@ -13,26 +8,29 @@ type Animal = {
 
 let listaAnimais = [] as Animal[];
 
-let animal1 = { nome: 'Rex', especie: 'Cachorro' } as Animal;
-let animal2 = { nome: 'Fiona', especie: 'Gato' } as Animal;
-let animal3 = { nome: 'Merilou', especie: 'Galinha' } as Animal;
-let animal4 = { nome: 'Jack', especie: 'Papagaio' } as Animal;
+let animal1 = { nome: 'Arthur', especie: 'se não fosse um ser-humano, seria uma mula' } as Animal;
+
+let animal2 = { nome: 'Abner', especie: 'se não fosse um ser-humano, seria um macaco' } as Animal;
+
+let animal3 = { nome: 'Maurício', especie: 'se não fosse um ser-humano, seria um burro' } as Animal;
+
+let animal4 = { nome: 'Vitor', especie: 'se não fosse um ser-humano, seria um dromedálio' } as Animal;
 
 listaAnimais.push(animal1);
 listaAnimais.push(animal2);
 listaAnimais.push(animal3);
 listaAnimais.push(animal4);
 
-type ItemProps ={
+type ItemProps = {
     animal: Animal
 }
 
 const ItemLista = (props: ItemProps) => {
     return (
         <View>
-            <Text style={styles.item2}>
-                {props.animal.especie + ' ' + props.animal.nome}
-            </Text>
+            <Text
+                style={styles.item2}>
+                {props.animal.especie + ' ' + props.animal.nome}</Text>
         </View>
     );
 }
@@ -42,7 +40,7 @@ const ListaFlat = () => {
         <>
             <FlatList
                 data={listaAnimais}
-                renderItem={({ item }) => 
+                renderItem={({ item }) =>
                     <Text style={styles.item}>
                         {item.nome + ' ' + item.especie}
                     </Text>} />
@@ -50,10 +48,8 @@ const ListaFlat = () => {
             <FlatList
                 data={listaAnimais}
                 renderItem={({ item }) => <ItemLista animal={item} />} />
-
         </>
     )
-
 }
 
 export default ListaFlat;
