@@ -39,7 +39,7 @@ const Aprovado = ({ navigation, route }: AprovadoProps) => {
                     Média: {("")}
                 </Text>
                 <Text style={styles.titulo_caixa_texto}>
-                    {/* Resultado: {resultado(media("props.nota1, props.nota2"))} */}
+                    Resultado: {resultado(media("props.nota1, props.nota2"))}
                 </Text>
                 <Pressable
                     style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}

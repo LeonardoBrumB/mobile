@@ -1,21 +1,23 @@
 import { NativeStackScreenProps, createNativeStackNavigator } from "@react-navigation/native-stack";
+import TelaPrincipal from "../Telas/TelaPrincipal";
+import TelaNumeros from "../Telas/TelaNumeros";
+import TelaCadProd from "../Telas/TelaCadProd";
 import TelaLogin from "../login/TelaLogin";
 import TelaCadastro from "../login/TelaCadastro";
-import TelaPrincipal from "../Telas/TelaPrincipal";
-import Aprovado from "../Telas/Aprovado";
-import TelaCadNota from "../Telas/TelaCadNota";
-import TelaConNotas from "../Telas/TelaConNotas";
-import TelaAltNotas from "../Telas/TelaAltNotas";
+import TelaConsCli from "../Telas/TelaConsCli";
+import TelaAltCli from "../Telas/TelaAltCli";
+import TelaCadCli from "../Telas/TelaCadCli";
 
 type RootStackParamList = {
     TelaLogin: undefined;
     TelaCadastro: undefined;
     TelaPrincipal: undefined;
-    Aprovado: undefined;
-    CadMedia: undefined;
-    TelaCadNota: undefined,
-    TelaConNotas: undefined,
-    TelaAltNotas: { id: string },
+    TelaNumeros: undefined;
+    TelaCadProd: undefined;
+    TelaCadCli: undefined;
+    TelaCadAtend: undefined;
+    TelaConsCli: undefined;
+    TelaAltCli: { id: string };
 }
 
 
@@ -26,25 +28,30 @@ const HomeNavigator = () => {
         <Stack.Navigator
             initialRouteName="TelaLogin"
             screenOptions={{ headerShown: false }}>
+
             <Stack.Screen name="TelaLogin" component={TelaLogin} />
             <Stack.Screen name="TelaCadastro" component={TelaCadastro} />
             <Stack.Screen name="TelaPrincipal" component={TelaPrincipal} />
-            <Stack.Screen name="Aprovado" component={Aprovado} />
-            <Stack.Screen name="TelaCadNota" component={TelaCadNota} />
-            <Stack.Screen name="TelaConNotas" component={TelaConNotas} />
-            <Stack.Screen name="TelaAltNotas" component={TelaAltNotas} />
+
+            <Stack.Screen name="TelaNumeros" component={TelaNumeros} />
+            <Stack.Screen name="TelaCadProd" component={TelaCadProd} />
+            <Stack.Screen name="TelaCadCli" component={TelaCadCli} />
+            <Stack.Screen name="TelaConsCli" component={TelaConsCli} />
+            <Stack.Screen name="TelaAltCli" component={TelaAltCli} />
 
         </Stack.Navigator>
     );
 }
 
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'TelaLogin'>;
-type CadUsuarioProps = NativeStackScreenProps<RootStackParamList, 'TelaCadastro'>;
+type CadProps = NativeStackScreenProps<RootStackParamList, 'TelaCadastro'>;
 type PrincipalProps = NativeStackScreenProps<RootStackParamList, 'TelaPrincipal'>;
-type AprovadoProps = NativeStackScreenProps<RootStackParamList, 'Aprovado'>;
-type CadNotaProps = NativeStackScreenProps<RootStackParamList, 'TelaCadNota'>;
-type ConNotasProps = NativeStackScreenProps<RootStackParamList, 'TelaConNotas'>;
-type AltNotasProps = NativeStackScreenProps<RootStackParamList, 'TelaAltNotas'>;
+type NumerosProps = NativeStackScreenProps<RootStackParamList, 'TelaNumeros'>;
+type CadProdProps = NativeStackScreenProps<RootStackParamList, 'TelaCadProd'>;
+type CadCliProps = NativeStackScreenProps<RootStackParamList, 'TelaCadCli'>;
+type CadAtendProps = NativeStackScreenProps<RootStackParamList, 'TelaCadAtend'>;
+type ConsCliProps = NativeStackScreenProps<RootStackParamList, 'TelaConsCli'>;
+type AltCliProps = NativeStackScreenProps<RootStackParamList, 'TelaAltCli'>;
 
 export default HomeNavigator;
-export type { LoginProps, CadUsuarioProps, PrincipalProps, AprovadoProps, CadNotaProps, ConNotasProps, AltNotasProps };
+export type { PrincipalProps, NumerosProps, CadProdProps, LoginProps, CadProps, CadAtendProps, CadCliProps, ConsCliProps, AltCliProps };

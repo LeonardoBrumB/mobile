@@ -1,36 +1,41 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Pressable, Image, Alert, ScrollViewComponent, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Pressable, ScrollView, Image } from 'react-native';
 import { PrincipalProps } from '../navigation/HomeNavigator';
-import ListaFlat from '../ListaFlat';
 
 const TelaPrincipal = ({ navigation, route }: PrincipalProps) => {
 
     return (
         <ScrollView>
-            <View style={styles.container}>
-                <Text style={styles.titulo_caixa_texto}>
-                    Bem vindo!
+            <View style={styles.container_header}>
+                {/* <View style={styles.painel_imagem}>
+                    <Image
+                        style={styles.imagem}
+                        source={{ uri: '//////////////' }} />
+                </View> */}
+                <Text style={styles.titulo}>
+                    Título
                 </Text>
+            </View>
+            <View style={styles.container}>
+
+
                 <Pressable
                     style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                    onPress={() => { navigation.navigate('Aprovado') }}>
-                    <Text style={styles.desc_botao}>Calcular média</Text>
+                    onPress={() => { navigation.navigate('TelaCadAtend') }}>
+                    <Text style={styles.desc_botao}>Cadastrar Atendimento</Text>
                 </Pressable>
 
                 <Pressable
                     style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                    onPress={() => { navigation.navigate('TelaCadNota') }}>
-                    <Text style={styles.desc_botao}>Cadastrar nota</Text>
+                    onPress={() => { navigation.navigate('TelaConsCli') }}>
+                    <Text style={styles.desc_botao}>Consultar cliente</Text>
                 </Pressable>
 
                 <Pressable
                     style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                    onPress={() => { navigation.navigate('TelaConNotas') }}>
-                    <Text style={styles.desc_botao}>Consultar notas</Text>
+                    onPress={() => { navigation.navigate('TelaCadCli') }}>
+                    <Text style={styles.desc_botao}>Cadastrar Cliente</Text>
                 </Pressable>
-
-                <ListaFlat />
-
             </View>
         </ScrollView>
     );
@@ -40,25 +45,21 @@ export default TelaPrincipal;
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 20,
+        paddingTop: 40,
         flex: 1,
         backgroundColor: '#1c62be',
-        paddingBottom: 537,
+        paddingBottom: 220,
     },
-    titulo_caixa_texto: {
-        paddingTop: 20,
-        paddingBottom: 30,
+    container_header: {
+        flex: 1,
+        backgroundColor: '#164d96',
+        paddingBottom: 80,
+    },
+    titulo: {
+        paddingTop: 55,
+        color: 'white',
         fontSize: 45,
-        color: 'black',
-        textAlign: 'center',
-    },
-    caixa_texto: {
-        width: '70%',
-        color: 'black',
-        borderWidth: 1,
-        borderRadius: 4,
-        margin: 3,
-        backgroundColor: 'white'
+        marginLeft: 40,
     },
     botao: {
         backgroundColor: 'blue',
@@ -72,14 +73,14 @@ const styles = StyleSheet.create({
         fontSize: 25,
         color: 'white'
     },
-    // painel_imagem: {
-    //     flex: 1,
-    //     alignItems: 'center',
-    //     justifyContent: 'center'
-    // },
-    // imagem: {
-    //     width: 200,
-    //     height: 200,
-    //     resizeMode: "center"
-    // }
+    painel_imagem: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    imagem: {
+        width: 200,
+        height: 200,
+        resizeMode: "center"
+    }
 });
