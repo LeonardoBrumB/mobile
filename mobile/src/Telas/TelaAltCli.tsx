@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 import firestore from "@react-native-firebase/firestore";
-import { IClientes } from "../model/Cliente";
+import { Cliente } from "../model/Cliente";
 import Carregamento from "../navigation/Carregamento";
 import { AltCliProps } from "../navigation/HomeNavigator";
 
@@ -30,7 +30,7 @@ const TelaAltCliente = ({ navigation, route }: AltCliProps) => {
             const cliente = {
                 id: resultado.id,
                 ...resultado.data()
-            } as IClientes;
+            } as Cliente;
 
             setNome(cliente.nome);
             setCpf(cliente.cpf);
@@ -56,7 +56,7 @@ const TelaAltCliente = ({ navigation, route }: AltCliProps) => {
         if (verificaCampos()) {
             setIsCarregando(true);
             firestore()
-                .collection('cliente')
+                .collection('clientes')
                 .doc(id)
                 .update({
                     nome,
@@ -98,48 +98,6 @@ const TelaAltCliente = ({ navigation, route }: AltCliProps) => {
         setCpf(formatarCPF(text));
     }
 
-    function validarCPF() {
-        let cpfValido = cpf.replace(/\D/g, '');
-
-        if (cpfValido.length !== 11) {
-            return false;
-        }
-
-        const todosDigitosIguais = /^(\d)\1{10}$/.test(cpfValido);
-        if (todosDigitosIguais) {
-            return false;
-        }
-
-        let soma = 0;
-        let resto;
-        for (let i = 1; i <= 9; i++) {
-            soma += parseInt(cpfValido.substring(i - 1, i)) * (11 - i);
-        }
-        resto = (soma * 10) % 11;
-
-        if (resto === 10 || resto === 11) {
-            resto = 0;
-        }
-        if (resto !== parseInt(cpfValido.substring(9, 10))) {
-            return false;
-        }
-
-        soma = 0;
-        for (let i = 1; i <= 10; i++) {
-            soma += parseInt(cpfValido.substring(i - 1, i)) * (12 - i);
-        }
-        resto = (soma * 10) % 11;
-
-        if (resto === 10 || resto === 11) {
-            resto = 0;
-        }
-        if (resto !== parseInt(cpfValido.substring(10, 11))) {
-            return false;
-        }
-
-        return true;
-    }
-
     const formatarData = (text: string) => {
         let dataFormatada = text.replace(/\D/g, '');
 
@@ -170,9 +128,6 @@ const TelaAltCliente = ({ navigation, route }: AltCliProps) => {
             return false;
         } if (!(cpf.length == 14)) {
             Alert.alert("CPF inválido", "O CPF do cliente deve conter 11 dígitos")
-            return false;
-        } if (!(validarCPF())) {
-            Alert.alert("CPF inválido", "Digite um CPF válido")
             return false;
         } if (datanasc == '') {
             Alert.alert("Data de nascimento em branco", "Insira a data de nascimento do cliente")
@@ -288,25 +243,32 @@ export default TelaAltCliente;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#1a1a1a',
-        paddingHorizontal: 20,
-        paddingVertical: 30
+        backgroundColor: 'rgba(20,0,300,0.5)',
+    },
+    container_header: {
+        backgroundColor: 'rgba(20,0,300,0.5)',
+        padding: 30,
+    },
+    container_body: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 40,
     },
     titulo: {
         fontSize: 25,
         textAlign: 'center',
-        color: '#fff',
+        color: 'white',
         marginBottom: 20
     },
     label: {
-        color: '#fff',
+        color: 'white',
         marginBottom: 5,
         fontSize: 20
     },
     input: {
         width: '100%',
         height: 40,
-        backgroundColor: '#fff',
+        backgroundColor: 'white',
         borderRadius: 5,
         paddingHorizontal: 10,
         marginBottom: 10,
