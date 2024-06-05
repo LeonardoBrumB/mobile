@@ -28,7 +28,7 @@ const TelaAltCli = ({ navigation, route }: AltCliProps) => {
             .doc(id)
             .get();
 
-        const nota = {
+        const cliente = {
             id: resultado.id,
             ...resultado.data()
         } as Cliente;
@@ -75,6 +75,26 @@ const TelaAltCli = ({ navigation, route }: AltCliProps) => {
             .finally(() => setIsCarregando(false));
     }
 
+    const formataCpf = (text: string) => {
+        let cpfFormat = text.replace(/\D/g, '');
+
+        if (cpfFormat.length > 3) {
+            cpfFormat = cpfFormat.replace(/^(\d{3})(\d)/g, '$1.$2');
+            if (cpfFormat.length > 7) {
+                cpfFormat = cpfFormat.replace(/^(\d{3})\.(\d{3})(\d)/g, '$1.$2.$3');
+                if (cpfFormat.length > 11) {
+                    cpfFormat = cpfFormat.replace(/^(\d{3})\.(\d{3})\.(\d{ 3})(\d)/g, '$1.$2.$3-$4');
+                }
+            }
+        }
+        return cpfFormat.substring(0, 14);
+    }
+
+    const ajustaCpf = (text: string) => {
+        const cpfFormatado = formataCpf(text);
+        setCpf(cpfFormatado);
+    }
+
     return (
         <ScrollView>
             <View
@@ -83,7 +103,7 @@ const TelaAltCli = ({ navigation, route }: AltCliProps) => {
                 <Text style={styles.titulo}>Alterar {nome}</Text>
             </View>
             <View style={styles.container}>
-                <View style={styles.caixa_texto}>
+                <View style={styles.caixas}>
 
                     <Text
                         style={styles.titulo_caixa_texto}>
@@ -101,8 +121,8 @@ const TelaAltCli = ({ navigation, route }: AltCliProps) => {
                     <TextInput
                         style={styles.caixa_texto}
                         value={cpf}
-                        maxLength={11}
-                        onChangeText={(text) => { setCpf(text.toString()) }}
+                        maxLength={14}
+                        onChangeText={ajustaCpf}
                         keyboardType="numeric" />
 
                     <Text
@@ -178,6 +198,12 @@ const TelaAltCli = ({ navigation, route }: AltCliProps) => {
                         disabled={isCarregando}>
                         <Text style={styles.desc_botao}>Alterar</Text>
                     </Pressable>
+                    <Pressable
+                        style={styles.botao}
+                        onPress={() => { navigation.navigate('TelaConsCli') }}
+                        disabled={isCarregando}>
+                        <Text style={styles.desc_botao}>Voltar</Text>
+                    </Pressable>
                 </View>
             </View>
         </ScrollView >
@@ -191,7 +217,7 @@ const styles = StyleSheet.create({
         paddingTop: 40,
         flex: 1,
         backgroundColor: '#1c62be',
-        paddingBottom: 100,
+        paddingBottom: '100%',
     },
     caixas: {
         alignItems: 'center',
@@ -229,10 +255,9 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
     },
     caixa_texto: {
+        alignItems: 'center',
         width: '70%',
         color: 'black',
-        borderWidth: 1,
-        borderRadius: 4,
         margin: 3,
         backgroundColor: 'white',
     },

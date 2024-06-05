@@ -7,27 +7,9 @@ import { ConsAtendProps } from "../navigation/HomeNavigator";
 import Carregamento from "../navigation/Carregamento";
 import { Atendimento } from "../Model/Atendimento";
 
-
-
-
-
-
-
-///////////////////////// PESQUISAR CLIENTE ///////////////
-
-
-
-
-
-
-
-
-
-
 type AtendimentoProps = {
     numero: number;
     atendimento: Atendimento;
-    onAlterar: (id: string) => void;
     onDeletar: (id: string) => void;
     onInform: (id: string) => void;
 }
@@ -52,14 +34,6 @@ const ItemAtendimento = (props: AtendimentoProps) => {
                         </Text>
                     </Pressable>
                 </View>
-                <View style={styles.botao_alterar}>
-                    <Pressable
-                        onPress={() => props.onAlterar(props.atendimento.id!)}>
-                        <Text style={styles.texto_botao_card}>
-                            A
-                        </Text>
-                    </Pressable>
-                </View>
 
                 <View style={styles.botao_deletar}>
 
@@ -79,6 +53,8 @@ const ItemAtendimento = (props: AtendimentoProps) => {
 const TelaConsCli = ({ navigation, route }: ConsAtendProps) => {
     const [atendimento, setAtendimento] = useState([] as Atendimento[]);
     const [isCarregando, setIsCarregando] = useState(false);
+
+
 
     useEffect(() => {
         setIsCarregando(true);
@@ -102,50 +78,45 @@ const TelaConsCli = ({ navigation, route }: ConsAtendProps) => {
         return () => subscribe();
     }, []);
 
-    function alterarAtendimeto(id: string) {
-        navigation.navigate("TelaAltAtend", { id: id })
-    }
     function infoAtendimeto(id: string) {
-        navigation.navigate("TelaInfoAted", { id: id })
+        navigation.navigate("TelaInfoAtend", { id: id })
     }
 
     function deletarAtendimento(id: string) {
 
-        if (confirm('realmente deseja deletar o atendimento?') == true) {
-            setIsCarregando(true);
+        setIsCarregando(true);
 
-            firestore()
-                .collection('atendimento')
-                .doc(id)
-                .delete()
-                .then(() => {
-                    Alert.alert("atendimento removido com sucesso")
-                })
-                .catch((error) => console.log(error))
-                .finally(() => setIsCarregando(false));
-        } else {
-            return false;
-        }
+        firestore()
+            .collection('atendimento')
+            .doc(id)
+            .delete()
+            .then(() => {
+                Alert.alert("atendimento removido com sucesso")
+            })
+            .catch((error) => console.log(error))
+            .finally(() => setIsCarregando(false));
 
     }
 
     return (
-        <View style={styles.container}>
+        <ScrollView>
             <Carregamento isCarregando={isCarregando} />
 
-            <Text style={styles.titulo}>Listagem de atendimentos</Text>
-            <FlatList
-                data={atendimento}
-                renderItem={(info) =>
-                    <ItemAtendimento
-                        numero={info.index}
-                        atendimento={info.item}
-                        onAlterar={alterarAtendimeto}
-                        onDeletar={deletarAtendimento}
-                        onInform={infoAtendimeto} />}>
+            <View style={styles.container_header}>
+                <Text style={styles.titulo}>Listagem de Atendimentos</Text>
+            </View><View style={styles.container}>
+                <FlatList
+                    data={atendimento}
+                    renderItem={(info) =>
+                        <ItemAtendimento
+                            numero={info.index}
+                            atendimento={info.item}
+                            onDeletar={deletarAtendimento}
+                            onInform={infoAtendimeto} />}>
 
-            </FlatList>
-        </View>
+                </FlatList>
+            </View>
+        </ScrollView>
     );
 }
 
@@ -155,6 +126,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#1c62be'
+    },
+    container_header: {
+        flex: 1,
+        backgroundColor: '#164d96',
+        paddingBottom: 50,
     },
     titulo: {
         fontSize: 40,
@@ -175,12 +151,6 @@ const styles = StyleSheet.create({
     },
     botao_deletar: {
         backgroundColor: 'red',
-        width: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    botao_alterar: {
-        backgroundColor: 'green',
         width: 40,
         justifyContent: 'center',
         alignItems: 'center',

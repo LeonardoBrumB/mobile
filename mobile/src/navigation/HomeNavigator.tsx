@@ -6,6 +6,7 @@ import TelaConsCli from "../Telas/TelaConsCli";
 import TelaAltCli from "../Telas/TelaAltCli";
 import TelaCadCli from "../Telas/TelaCadCli";
 import TelaInfoCli from "../Telas/TelaInfoCli";
+import TelaInfoAtend from "../Telas/TelaInfoAtend";
 import TelaConsCliToAtend from "../Telas/TelaConsCliToAtend";
 import TelaCadAtend from "../Telas/TelaCadAtend";
 import TelaConsAtend from "../Telas/TelaConsAtend";
@@ -18,12 +19,13 @@ type RootStackParamList = {
     TelaNumeros: undefined;
     TelaCadProd: undefined;
     TelaCadCli: undefined;
-    TelaCadAtend: undefined;
+    TelaCadAtend: { id: string };
     TelaConsCli: undefined;
     TelaAltCli: { id: string };
-    TelaInfoCli: undefined;
+    TelaInfoCli: { id: string };
     TelaConsCliToAtend: undefined;
     TelaConsAtend: undefined;
+    TelaInfoAtend: { id: string };
 }
 
 
@@ -43,6 +45,7 @@ const HomeNavigator = () => {
             <Stack.Screen name="TelaConsCli" component={TelaConsCli} />
             <Stack.Screen name="TelaAltCli" component={TelaAltCli} />
             <Stack.Screen name="TelaInfoCli" component={TelaInfoCli} />
+            <Stack.Screen name="TelaInfoAtend" component={TelaInfoAtend} />
             <Stack.Screen name="TelaConsCliToAtend" component={TelaConsCliToAtend} />
             <Stack.Screen name="TelaCadAtend" component={TelaCadAtend} />
             <Stack.Screen name="TelaConsAtend" component={TelaConsAtend} />
@@ -52,15 +55,26 @@ const HomeNavigator = () => {
 }
 
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'TelaLogin'>;
+
 type CadProps = NativeStackScreenProps<RootStackParamList, 'TelaCadastro'>;
+
 type PrincipalProps = NativeStackScreenProps<RootStackParamList, 'TelaPrincipal'>;
+
 type CadCliProps = NativeStackScreenProps<RootStackParamList, 'TelaCadCli'>;
+
 type CadAtendProps = NativeStackScreenProps<RootStackParamList, 'TelaCadAtend'>;
+
 type ConsCliProps = NativeStackScreenProps<RootStackParamList, 'TelaConsCli'>;
+
 type ConsAtendProps = NativeStackScreenProps<RootStackParamList, 'TelaConsAtend'>;
+
 type AltCliProps = NativeStackScreenProps<RootStackParamList, 'TelaAltCli'>;
+
 type InfoCliProps = NativeStackScreenProps<RootStackParamList, 'TelaInfoCli'>;
+
+type InfoAtendProps = NativeStackScreenProps<RootStackParamList, 'TelaInfoAtend'>;
+
 type ConsCliToAtendProps = NativeStackScreenProps<RootStackParamList, 'TelaConsCliToAtend'>;
 
 export default HomeNavigator;
-export type { PrincipalProps, LoginProps, CadProps, CadAtendProps, CadCliProps, ConsCliProps, AltCliProps, InfoCliProps, ConsCliToAtendProps, ConsAtendProps };
+export type { PrincipalProps, LoginProps, CadProps, CadAtendProps, CadCliProps, ConsCliProps, AltCliProps, InfoCliProps, ConsCliToAtendProps, ConsAtendProps, InfoAtendProps };
