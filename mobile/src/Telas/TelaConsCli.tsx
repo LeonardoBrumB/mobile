@@ -23,6 +23,9 @@ const ItemCliente = (props: ClientesProps) => {
                 <Text style={styles.cpf}>
                     {'CPF: ' + props.clientes.cpf}
                 </Text>
+                <Text style={styles.cpf}>
+                    {'Data de nascimento: ' + props.clientes.dataNascimento}
+                </Text>
             </View>
             <View style={styles.botoes}>
                 <Pressable
@@ -160,7 +163,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: 70
+        width: 80
     },
     botao: {
         backgroundColor: 'indigo',
@@ -185,7 +188,7 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         justifyContent: 'center',
         alignItems: 'center',
-        width: 37,
+        width: 40,
         height: 60
     },
     botao_del: {
@@ -195,12 +198,12 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         justifyContent: 'center',
         alignItems: 'center',
-        width: 37,
+        width: 40,
         height: 60,
     },
     texto_botao_card: {
         fontWeight: "bold",
-        fontSize: 18,
+        fontSize: 25,
         color: 'white'
     },
     desc_botao: {
