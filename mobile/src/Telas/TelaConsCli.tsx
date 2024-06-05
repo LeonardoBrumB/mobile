@@ -1,83 +1,72 @@
-import { useState, useEffect, useId } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Pressable, FlatList, StyleSheet, Text, View, ScrollView } from "react-native";
 
 import firestore from "@react-native-firebase/firestore";
-import { Cliente } from "../Model/Cliente";
-import { ConsCliProps } from "../navigation/HomeNavigator";
+import { Cliente } from "../model/Cliente";
+import { ConCliProps } from "../navigation/HomeNavigator";
 import Carregamento from "../navigation/Carregamento";
 
-
-type ClienteProps = {
+type ClientesProps = {
     numero: number;
-    cliente: Cliente;
+    clientes: Cliente;
     onAlterar: (id: string) => void;
     onDeletar: (id: string) => void;
-    onInform: (id: string) => void;
 }
 
-const ItemCliente = (props: ClienteProps) => {
-
+const ItemCliente = (props: ClientesProps) => {
     return (
         <View style={styles.card}>
             <View style={styles.dados_card}>
-                <Text style={{ fontSize: 25 }}>
-                    {props.numero + 1 + ' - ' + props.cliente.nome}
+                <Text style={styles.titulo}>
+                    {' Nome: ' + props.clientes.nome}
                 </Text>
-                <Text style={{ fontSize: 15 }}>{props.cliente.cpf}</Text>
+                <Text style={styles.cpf}>
+                    {'CPF: ' + props.clientes.cpf}
+                </Text>
             </View>
-
-            <View style={styles.botao_info}>
+            <View style={styles.botoes}>
                 <Pressable
-                    onPress={() => props.onInform(props.cliente.id!)}>
-                    <Text style={styles.texto_botao_card}>
-                        i
-                    </Text>
-                </Pressable>
-            </View>
-            <View style={styles.botao_alterar}>
-                <Pressable
-                    onPress={() => props.onAlterar(props.cliente.id!)}>
+                    style={styles.botao_alt}
+                    onPress={() => props.onAlterar(props.clientes.id!)}>
                     <Text style={styles.texto_botao_card}>
                         A
                     </Text>
                 </Pressable>
-            </View>
-
-            <View style={styles.botao_deletar}>
-
                 <Pressable
-                    onPress={() => props.onDeletar(props.cliente.id!)}>
+                    style={styles.botao_del}
+                    onPress={() => props.onDeletar(props.clientes.id!)}>
                     <Text style={styles.texto_botao_card}>
                         X
                     </Text>
                 </Pressable>
+
             </View>
-
-
         </View>
     );
 }
 
-const TelaConsCli = ({ navigation, route }: ConsCliProps) => {
-    const [cliente, setCliente] = useState([] as Cliente[]);
+const TelaConClientes = ({ navigation, route }: ConCliProps) => {
+    const [clientes, setClientes] = useState([] as Cliente[]);
     const [isCarregando, setIsCarregando] = useState(false);
 
     useEffect(() => {
         setIsCarregando(true);
 
         const subscribe = firestore()
-            .collection('cliente')
+            .collection('clientes')
             .onSnapshot(querySnapshot => {
-                const data = querySnapshot.docs.map(doc => {
+                if (querySnapshot) {
+                    const data = querySnapshot.docs.map(doc => {
 
-                    return {
-                        id: doc.id,
-                        ...doc.data()
-                    }
+                        return {
+                            id: doc.id,
+                            ...doc.data()
+                        }
 
-                }) as Cliente[];
+                    }) as Cliente[];
 
-                setCliente(data);
+                    setClientes(data);
+                }
                 setIsCarregando(false);
             });
 
@@ -87,122 +76,135 @@ const TelaConsCli = ({ navigation, route }: ConsCliProps) => {
     function alterarCliente(id: string) {
         navigation.navigate("TelaAltCli", { id: id })
     }
-    function infoCliente(id: string) {
-        navigation.navigate("TelaInfoCli", { id: id })
-    }
 
     function deletarCliente(id: string) {
-
         setIsCarregando(true);
 
         firestore()
-            .collection('cliente')
+            .collection('clientes')
             .doc(id)
             .delete()
             .then(() => {
-                Alert.alert("Cliente removido com sucesso")
+                Alert.alert("Cliente", "Removido com sucesso")
             })
             .catch((error) => console.log(error))
             .finally(() => setIsCarregando(false));
-
     }
 
     return (
-        <ScrollView>
             <View style={styles.container}>
                 <Carregamento isCarregando={isCarregando} />
                 <View style={styles.container_header}>
-                    <Text style={styles.titulo}>Lista de clientes</Text>
+                    <Text style={styles.titulo}>Lista de Clientes</Text>
                 </View>
                 <FlatList
-                    data={cliente}
+                    data={clientes}
                     renderItem={(info) =>
                         <ItemCliente
                             numero={info.index}
-                            cliente={info.item}
+                            clientes={info.item}
                             onAlterar={alterarCliente}
-                            onDeletar={deletarCliente}
-                            onInform={infoCliente} />}>
+                            onDeletar={deletarCliente} />}>
 
                 </FlatList>
-                <Pressable
-                    style={styles.botao}
-                    onPress={() => { navigation.navigate('TelaPrincipal') }}>
-                    <Text style={styles.desc_botao}>
-                        voltar
-                    </Text>
-                </Pressable>
+                <View style={styles.container_body}>
+                    <Pressable
+                        style={styles.botao}
+                        onPress={() => { navigation.goBack() }}>
+                        <Text style={styles.desc_botao}>Voltar</Text>
+                    </Pressable>
+                </View>
             </View>
-        </ScrollView>
     );
 }
 
-export default TelaConsCli;
+export default TelaConClientes;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#1c62be',
-        paddingBottom: '100%',
+        backgroundColor: 'rgba(20,0,300,0.5)',
     },
     container_header: {
-        flex: 1,
-        backgroundColor: '#164d96',
-        paddingBottom: 30,
+        backgroundColor: 'rgba(20,0,300,0.5)',
+        padding: 20
+    },
+    container_body: {
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     titulo: {
-        paddingTop: 35,
-        color: 'white',
-        fontSize: 35,
+        fontSize: 30,
         textAlign: 'center',
+        color: 'white',
+        marginBottom: 10
     },
     card: {
-        borderWidth: 2,
-        borderColor: 'grey',
-        margin: 5,
-        marginTop: 20,
-        borderRadius: 10,
-        padding: 3,
+        borderWidth: 1,
+        borderColor: 'black',
+        marginVertical: 5,
+        borderRadius: 5,
+        padding: 5,
+        marginHorizontal: 10,
         flexDirection: 'row',
-        backgroundColor: 'white'
+        backgroundColor: 'rgba(20,100,300,0.5)'
     },
     dados_card: {
         flex: 1
     },
-    botao_deletar: {
-        backgroundColor: 'red',
-        width: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
+    cpf: {
+        fontSize: 15,
+        color: 'white'
     },
-    botao_alterar: {
+    botoes: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: 70
+    },
+    botao: {
+        backgroundColor: 'indigo',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 15,
+        paddingHorizontal: 30,
+        borderRadius: 10,
+        marginBottom: 15,
+        shadowColor: '#000000',
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+    },
+    botao_alt: {
         backgroundColor: 'green',
-        width: 40,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: 'black',
         justifyContent: 'center',
         alignItems: 'center',
+        width: 37,
+        height: 60
     },
-    botao_info: {
-        backgroundColor: 'yellow',
-        width: 40,
+    botao_del: {
+        backgroundColor: 'red',
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: 'black',
         justifyContent: 'center',
         alignItems: 'center',
+        width: 37,
+        height: 60,
     },
     texto_botao_card: {
         fontWeight: "bold",
-        fontSize: 30,
-        color: 'black'
-    },
-    botao: {
-        backgroundColor: 'blue',
-        paddingVertical: 15,
-        marginTop: 20,
-        marginBottom: 30,
-        borderRadius: 10,
-        marginHorizontal: 100,
+        fontSize: 18,
+        color: 'white'
     },
     desc_botao: {
-        textAlign: 'center',
-        fontSize: 25,
-        color: 'white'
+        fontSize: 18,
+        color: '#FFFFFF',
     },
 });
