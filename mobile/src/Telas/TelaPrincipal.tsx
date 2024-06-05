@@ -1,76 +1,89 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Pressable, ScrollView, Image } from 'react-native';
-import { PrincipalProps } from '../navigation/HomeNavigator';
+import React from 'react';
+import { StyleSheet, Text, View, Pressable } from 'react-native';
 
-const TelaPrincipal = ({ navigation, route }: PrincipalProps) => {
-
+const TelaPrincipal = ({ navigation, route }) => {
+    
     return (
-        <ScrollView>
+        <View style={styles.container}>
             <View style={styles.container_header}>
-                <Text style={styles.titulo}>
-                    Bem vindo!
-                </Text>
+                <Text style={styles.titulo}>Bem Vindo!</Text>
             </View>
-            <View style={styles.container}>
+            <View style={styles.container_body}>
                 <Pressable
-                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                    onPress={() => { navigation.navigate('TelaCadCli') }}>
+                    style={styles.botao}
+                    onPress={() => { navigation.navigate('TelaCadCli') }}
+                >
                     <Text style={styles.desc_botao}>Cadastrar Cliente</Text>
                 </Pressable>
-
                 <Pressable
-                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                    onPress={() => { navigation.navigate('TelaConsCli') }}>
-                    <Text style={styles.desc_botao}>Consultar cliente</Text>
+                    style={styles.botao}
+                    onPress={() => { navigation.navigate('TelaConCli') }}
+                >
+                    <Text style={styles.desc_botao}>Consultar clientes</Text>
                 </Pressable>
-
                 <Pressable
-                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                    onPress={() => { navigation.navigate('TelaConsCliToAtend') }}>
+                    style={styles.botao}
+                    onPress={() => { navigation.navigate('TelaCadAtend') }}
+                >
                     <Text style={styles.desc_botao}>Cadastrar Atendimento</Text>
                 </Pressable>
                 <Pressable
-                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                    onPress={() => { navigation.navigate('TelaConsAtend') }}>
-                    <Text style={styles.desc_botao}>Consultar Atendimento</Text>
+                    style={styles.botao}
+                    onPress={() => { navigation.navigate('TelaConsAtend') }}
+                >
+                    <Text style={styles.desc_botao}>Consultar Atendimentos</Text>
+                </Pressable>
+                <Pressable
+                    style={styles.botao}
+                    onPress={() => { navigation.goBack() }}
+                >
+                    <Text style={styles.desc_botao}>Sair</Text>
                 </Pressable>
             </View>
-        </ScrollView>
-    );
+        </View>
+    )
 }
 
 export default TelaPrincipal;
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 20,
-        paddingBottom: '80%',
         flex: 1,
-        backgroundColor: '#1c62be'
-
+        backgroundColor: 'rgba(20,0,300,0.5)',
     },
     container_header: {
-        flex: 1,
-        backgroundColor: '#164d96',
-        paddingBottom: 40,
+        backgroundColor: 'rgba(20,0,300,0.5)',
+    },
+    container_body: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 40,
     },
     titulo: {
-        paddingTop: 35,
-        color: 'white',
-        fontSize: 35,
         textAlign: 'center',
+        color: 'white',
+        fontSize: 30,
+        marginBottom: 30,
+        marginTop: 30,
     },
     botao: {
+        backgroundColor: 'indigo',
+        alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'blue',
         paddingVertical: 15,
-        marginTop: 25,
+        paddingHorizontal: 30,
         borderRadius: 10,
-        marginHorizontal: 50,
+        marginBottom: 15,
+        shadowColor: '#000000',
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
     },
     desc_botao: {
-        fontSize: 20,
-        color: 'white',
-        textAlign: 'center',
-    },
+        fontSize: 18,
+        color: '#FFFFFF',
+    }
 });

@@ -2,15 +2,13 @@ import { useEffect, useState } from "react";
 import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 import firestore from "@react-native-firebase/firestore";
-import { Cliente } from "../Model/Cliente";
+import { IClientes } from "../model/Cliente";
 import Carregamento from "../navigation/Carregamento";
 import { AltCliProps } from "../navigation/HomeNavigator";
 
-
-const TelaAltCli = ({ navigation, route }: AltCliProps) => {
+const TelaAltCliente = ({ navigation, route }: AltCliProps) => {
     const [id,] = useState(route.params.id);
     const [nome, setNome] = useState('');
-    const [cliente, setCliente] = useState('');
     const [cpf, setCpf] = useState('');
     const [rua, setRua] = useState('');
     const [numero, setNumero] = useState('');
@@ -18,30 +16,35 @@ const TelaAltCli = ({ navigation, route }: AltCliProps) => {
     const [complemento, setComplemento] = useState('');
     const [cidade, setCidade] = useState('');
     const [estado, setEstado] = useState('');
-    const [dataNasc, setDataNasc] = useState('');
+    const [datanasc, setDataNasc] = useState('');
     const [isCarregando, setIsCarregando] = useState(false);
 
     async function carregar() {
         setIsCarregando(true);
-        const resultado = await firestore()
-            .collection('cliente')
-            .doc(id)
-            .get();
+        try {
+            const resultado = await firestore()
+                .collection('cliente')
+                .doc(id)
+                .get();
 
-        const cliente = {
-            id: resultado.id,
-            ...resultado.data()
-        } as Cliente;
+            const cliente = {
+                id: resultado.id,
+                ...resultado.data()
+            } as IClientes;
 
-        setNome(cliente.nome);
-        setCpf(cliente.cpf);
-        setRua(cliente.rua);
-        setNumero(cliente.numero);
-        setBairro(cliente.bairro);
-        setComplemento(cliente.complemento);
-        setCidade(cliente.cidade);
-        setEstado(cliente.estado);
-        setDataNasc(cliente.dataNasc);
+            setNome(cliente.nome);
+            setCpf(cliente.cpf);
+            setDataNasc(cliente.dataNascimento);
+            setRua(cliente.rua);
+            setNumero(cliente.numero);
+            setBairro(cliente.bairro);
+            setComplemento(cliente.complemento);
+            setCidade(cliente.cidade);
+            setEstado(cliente.estado);
+        } catch (error) {
+            setIsCarregando(false);
+            console.log(error)
+        }
         setIsCarregando(false);
     };
 
@@ -50,77 +53,30 @@ const TelaAltCli = ({ navigation, route }: AltCliProps) => {
     }, []);
 
     function alterar() {
-        setIsCarregando(true);
-
         if (verificaCampos()) {
+            setIsCarregando(true);
             firestore()
                 .collection('cliente')
                 .doc(id)
                 .update({
                     nome,
                     cpf,
+                    datanasc,
                     rua,
                     numero,
                     bairro,
                     complemento,
                     cidade,
                     estado,
-                    dataNasc,
                     created_at: firestore.FieldValue.serverTimestamp()
                 })
                 .then(() => {
-                    Alert.alert("Cliente", "Alterado com sucesso")
+                    Alert.alert('Cliente', 'Alterado com sucesso')
                     navigation.goBack();
                 })
                 .catch((error) => console.log(error))
                 .finally(() => setIsCarregando(false));
         }
-        setIsCarregando(false);
-    }
-
-    function verificaCampos() {
-        if (nome == '') {
-            Alert.alert("Nome em branco",
-                "Digite um nome")
-            return false;
-        }
-        if (cpf == '') {
-            Alert.alert("Cpf em branco",
-                "Digite um Cpf")
-            return false;
-        }
-        if (rua == '') {
-            Alert.alert("rua em branco",
-                "Digite uma rua")
-            return false;
-        }
-        if (numero == '') {
-            Alert.alert("numero em branco",
-                "Digite um numero")
-            return false;
-        }
-        if (bairro == '') {
-            Alert.alert("Bairro em branco",
-                "Digite um bairro")
-            return false;
-        }
-        if (cidade == '') {
-            Alert.alert("Cidade em branco",
-                "Digite uma cidade")
-            return false;
-        }
-        if (estado == '') {
-            Alert.alert("Estado em branco",
-                "Digite um estado")
-            return false;
-        }
-        if (dataNasc == '') {
-            Alert.alert("Data de nascimento em branco",
-                "Digite uma data de nascimento")
-            return false;
-        }
-
-        return true;
     }
 
     const formatarCPF = (text: string) => {
@@ -129,204 +85,243 @@ const TelaAltCli = ({ navigation, route }: AltCliProps) => {
         if (cpfFormatado.length > 3) {
             cpfFormatado = cpfFormatado.replace(/^(\d{3})(\d)/g, '$1.$2');
             if (cpfFormatado.length > 7) {
-                cpfFormatado = cpfFormatado.replace(/^(\d{3}).(\d{3})(\d)/g, '$1.$2.$3');
+                cpfFormatado = cpfFormatado.replace(/^(\d{3})\.(\d{3})(\d)/g, '$1.$2.$3');
                 if (cpfFormatado.length > 11) {
-                    cpfFormatado = cpfFormatado.replace(/^(\d{3}).(\d{3}).(\d{3})(\d)/g, '$1.$2.$3-$4');
+                    cpfFormatado = cpfFormatado.replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/g, '$1.$2.$3-$4');
                 }
             }
         }
-
         return cpfFormatado.substring(0, 14);
     };
 
-    const ajustaCpf = (text: string) => {
-        const cpfFormatado = formatarCPF(text);
-        setCpf(cpfFormatado);
+    const ajustarCPF = (text: string) => {
+        setCpf(formatarCPF(text));
+    }
+
+    function validarCPF() {
+        let cpfValido = cpf.replace(/\D/g, '');
+
+        if (cpfValido.length !== 11) {
+            return false;
+        }
+
+        const todosDigitosIguais = /^(\d)\1{10}$/.test(cpfValido);
+        if (todosDigitosIguais) {
+            return false;
+        }
+
+        let soma = 0;
+        let resto;
+        for (let i = 1; i <= 9; i++) {
+            soma += parseInt(cpfValido.substring(i - 1, i)) * (11 - i);
+        }
+        resto = (soma * 10) % 11;
+
+        if (resto === 10 || resto === 11) {
+            resto = 0;
+        }
+        if (resto !== parseInt(cpfValido.substring(9, 10))) {
+            return false;
+        }
+
+        soma = 0;
+        for (let i = 1; i <= 10; i++) {
+            soma += parseInt(cpfValido.substring(i - 1, i)) * (12 - i);
+        }
+        resto = (soma * 10) % 11;
+
+        if (resto === 10 || resto === 11) {
+            resto = 0;
+        }
+        if (resto !== parseInt(cpfValido.substring(10, 11))) {
+            return false;
+        }
+
+        return true;
     }
 
     const formatarData = (text: string) => {
-        let dataFormatado = text.replace(/\D/g, '');
+        let dataFormatada = text.replace(/\D/g, '');
 
-        if (dataFormatado.length > 2) {
-            dataFormatado = dataFormatado.replace(/^(\d{2})(\d)/g, '$1/$2');
-            if (dataFormatado.length > 6) {
-                dataFormatado = dataFormatado.replace(/^(\d{2}).(\d{2})(\d)/g, '$1/$2/$3');
-
+        if (dataFormatada.length > 2) {
+            dataFormatada = dataFormatada.replace(/^(\d{2})(\d)/g, '$1/$2');
+            if (dataFormatada.length > 5) {
+                dataFormatada = dataFormatada.replace(/^(\d{2})\/(\d{2})(\d)/g, '$1/$2/$3');
             }
         }
 
-        return dataFormatado.substring(0, 10);
+        return dataFormatada.substring(0, 10);
     };
 
-    const ajustaData = (text: string) => {
-        const dataFormatado = formatarData(text);
-        setDataNasc(dataFormatado);
+    const ajustarDataNascimento = (text: string) => {
+        const dataFormatada = formatarData(text);
+        setDataNasc(dataFormatada);
+    };
+
+    function verificaCampos() {
+        if (nome == '') {
+            Alert.alert("Nome em branco", "Preencha o nome do cliente")
+            return false;
+        } if (!(/^[a-zA-Z\s]+$/.test(nome))) {
+            Alert.alert("Nome inválido", "O nome do cliente deve conter apenas letras")
+            return false;
+        } if (cpf == '') {
+            Alert.alert("CPF em branco", "Insira o CPF do cliente")
+            return false;
+        } if (!(cpf.length == 14)) {
+            Alert.alert("CPF inválido", "O CPF do cliente deve conter 11 dígitos")
+            return false;
+        } if (!(validarCPF())) {
+            Alert.alert("CPF inválido", "Digite um CPF válido")
+            return false;
+        } if (datanasc == '') {
+            Alert.alert("Data de nascimento em branco", "Insira a data de nascimento do cliente")
+            return false;
+        } if (!(datanasc.length == 10)) {
+            Alert.alert("Data de nascimento incompleta", "Digite a data completa")
+            return false;
+        } if (rua == '') {
+            Alert.alert("Rua em branco", "Insira a rua do cliente")
+            return false;
+        } if (numero == '') {
+            Alert.alert("Número em branco", "Insira o número do cliente")
+            return false;
+        } if (bairro == '') {
+            Alert.alert("Bairro em branco", "Insira o bairro do cliente")
+            return false;
+        } if (cidade == '') {
+            Alert.alert("Cidade em branco", "Insira a cidade do cliente")
+            return false;
+        } if (estado == '') {
+            Alert.alert("Estado em branco", "Insira o estado do cliente")
+            return false;
+        }
+        return true;
     }
 
     return (
-        <ScrollView>
-            <View
-                style={styles.container_header}>
-                <Carregamento isCarregando={isCarregando} />
-                <Text style={styles.titulo}>Alterar {nome}</Text>
-            </View>
-            <View style={styles.container}>
-                <View style={styles.caixas}>
+        <ScrollView style={styles.container}>
+            <Carregamento isCarregando={isCarregando} />
 
-                    <Text
-                        style={styles.titulo_caixa_texto}>
-                        Nome:
-                    </Text>
-                    <TextInput
-                        style={styles.caixa_texto}
-                        value={nome}
-                        onChangeText={(text) => { setNome(text) }} />
+            <Text style={styles.titulo}>Alterar dados do cliente</Text>
 
-                    <Text
-                        style={styles.titulo_caixa_texto}>
-                        Cpf:
-                    </Text>
-                    <TextInput
-                        style={styles.caixa_texto}
-                        value={cpf}
-                        maxLength={14}
-                        onChangeText={ajustaCpf}
-                        keyboardType="numeric" />
+            <Text style={styles.label}>Nome:</Text>
+            <TextInput
+                style={styles.input}
+                value={nome}
+                onChangeText={(text) => { setNome(text) }}
+                placeholder='Digite o nome do cliente' />
+            
+            <Text style={styles.label}>CPF:</Text>
+            <TextInput
+                style={styles.input}
+                onChangeText={ajustarCPF}
+                value={cpf}
+                keyboardType="numeric"
+                maxLength={14}
+                placeholder='Digite o CPF do cliente' />
 
-                    <Text
-                        style={styles.titulo_caixa_texto}>
-                        Rua:
-                    </Text>
-                    <TextInput
-                        style={styles.caixa_texto}
-                        value={rua}
-                        onChangeText={(text) => { setRua(text) }} />
+            <Text style={styles.label}>Rua:</Text>
+            <TextInput
+                style={styles.input}
+                value={rua}
+                onChangeText={(text) => { setRua(text) }}
+                placeholder='Digite a rua do cliente' />
+            
+            <Text style={styles.label}>Número:</Text>
+            <TextInput
+                style={styles.input}
+                value={numero}
+                onChangeText={(text) => { setNumero(text) }}
+                placeholder='Digite o número do endereço do cliente' />
 
-                    <Text
-                        style={styles.titulo_caixa_texto}>
-                        Numero:
-                    </Text>
-                    <TextInput
-                        style={styles.caixa_texto}
-                        value={numero}
-                        onChangeText={(text) => { setNumero(text.toString()) }}
-                        keyboardType="numeric" />
+            <Text style={styles.label}>Bairro:</Text>
+            <TextInput
+                style={styles.input}
+                value={bairro}
+                onChangeText={(text) => { setBairro(text) }}
+                placeholder='Digite o bairro do cliente' />
 
-                    <Text
-                        style={styles.titulo_caixa_texto}>
-                        Bairro:
-                    </Text>
-                    <TextInput
-                        style={styles.caixa_texto}
-                        value={bairro}
-                        onChangeText={(text) => { setBairro(text) }} />
+            <Text style={styles.label}>Complemento:</Text>
+            <TextInput
+                style={styles.input}
+                value={complemento}
+                onChangeText={(text) => { setComplemento(text) }} 
+                placeholder='Digite o complemento do endereço do cliente'/>
 
-                    <Text
-                        style={styles.titulo_caixa_texto}>
-                        Complemento:
-                    </Text>
-                    <TextInput
-                        style={styles.caixa_texto}
-                        value={complemento}
-                        onChangeText={(text) => { setComplemento(text) }} />
+            <Text style={styles.label}>Cidade:</Text>
+            <TextInput
+                style={styles.input}
+                value={cidade}
+                onChangeText={(text) => { setCidade(text) }}
+                placeholder='Digite a cidade do cliente' />
 
-                    <Text
-                        style={styles.titulo_caixa_texto}>
-                        Cidade:
-                    </Text>
-                    <TextInput
-                        style={styles.caixa_texto}
-                        value={cidade}
-                        onChangeText={(text) => { setCidade(text) }} />
+            <Text style={styles.label}>Estado (UF):</Text>
+            <TextInput
+                style={styles.input}
+                value={estado}
+                onChangeText={(text) => { setEstado(text) }}
+                maxLength={2}
+                placeholder='Digite o UF do cliente' />
 
-                    <Text
-                        style={styles.titulo_caixa_texto}>
-                        Estado:
-                    </Text>
-                    <TextInput
-                        style={styles.caixa_texto}
-                        value={estado}
-                        onChangeText={(text) => { setEstado(text) }} />
+            <Text style={styles.label}>Data de nascimento:</Text>
+            <TextInput
+                style={styles.input}
+                onChangeText={ajustarDataNascimento}
+                value={datanasc}
+                keyboardType="numeric"
+                maxLength={10}
+                placeholder='DD/MM/AAAA' />
 
-                    <Text
-                        style={styles.titulo_caixa_texto}>
-                        Data de nascimento:
-                    </Text>
-                    <TextInput
-                        style={styles.caixa_texto}
-                        value={dataNasc}
-                        maxLength={10}
-                        onChangeText={ajustaData}
-                        keyboardType="numeric" />
-                </View>
-                <View style={styles.caixa_botao}>
-                    <Pressable
-                        style={styles.botao}
-                        onPress={() => alterar()}
-                        disabled={isCarregando}>
-                        <Text style={styles.desc_botao}>Alterar</Text>
-                    </Pressable>
-                    <Pressable
-                        style={styles.botao}
-                        onPress={() => { navigation.navigate('TelaConsCli') }}
-                        disabled={isCarregando}>
-                        <Text style={styles.desc_botao}>Voltar</Text>
-                    </Pressable>
-                </View>
-            </View>
-        </ScrollView >
+            <Pressable
+                style={styles.botao}
+                onPress={alterar}
+                disabled={isCarregando}>
+                <Text style={styles.desc_botao}>Alterar</Text>
+            </Pressable>
+        </ScrollView>
     );
 }
 
-export default TelaAltCli;
+export default TelaAltCliente;
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 20,
         flex: 1,
-        backgroundColor: '#1c62be',
-        paddingBottom: 20,
-    },
-    caixas: {
-        alignItems: 'center',
-    },
-    caixa_botao: {
-        paddingTop: 15,
-    },
-    container_header: {
-        flex: 1,
-        backgroundColor: '#164d96',
-        paddingBottom: 40,
+        backgroundColor: '#1a1a1a',
+        paddingHorizontal: 20,
+        paddingVertical: 30
     },
     titulo: {
-        paddingTop: 35,
-        color: 'white',
-        fontSize: 35,
+        fontSize: 25,
         textAlign: 'center',
+        color: '#fff',
+        marginBottom: 20
+    },
+    label: {
+        color: '#fff',
+        marginBottom: 5,
+        fontSize: 20
+    },
+    input: {
+        width: '100%',
+        height: 40,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        marginBottom: 10,
+        color: 'black',
+        fontSize: 20
     },
     botao: {
-        backgroundColor: 'blue',
-        paddingVertical: 20,
-        marginTop: 25,
+        justifyContent: 'center',
+        alignItems: 'center',
         borderRadius: 10,
-        marginHorizontal: 70,
+        backgroundColor: '#00BFFF',
+        paddingVertical: 10
     },
     desc_botao: {
-        textAlign: 'center',
-        fontSize: 25,
-        color: 'white'
-    },
-    titulo_caixa_texto: {
-        paddingTop: 15,
-        fontSize: 25,
-        color: 'black',
-        paddingBottom: 5,
-    },
-    caixa_texto: {
-        alignItems: 'center',
-        width: '70%',
-        color: 'black',
-        margin: 3,
-        backgroundColor: 'white',
+        fontSize: 18,
+        color: '#fff'
     },
 });

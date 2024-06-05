@@ -1,197 +1,142 @@
 import { useState, useEffect } from "react";
-import { Alert, Pressable, FlatList, StyleSheet, Text, View, ScrollView } from "react-native";
+import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import firestore from "@react-native-firebase/firestore";
-import { Cliente } from "../Model/Cliente";
-import { ConsAtendProps, ConsCliProps } from "../navigation/HomeNavigator";
+import { Atendimento } from "../model/Atendimento";
 import Carregamento from "../navigation/Carregamento";
-import { Atendimento } from "../Model/Atendimento";
+import { ConsAtendProps } from "../navigation/HomeNavigator";
 
-
-type AtendProps = {
-    numero: number;
-    atendimento: Atendimento;
-    onDeletar: (id: string) => void;
-    onInform: (id: string) => void;
-}
-
-const ItemAtendimento = (props: AtendProps) => {
-
+const ItemAtendimento = ({ atendimento }: { atendimento: Atendimento }) => {
     return (
         <View style={styles.card}>
             <View style={styles.dados_card}>
-                <Text style={{ fontSize: 25 }}>
-                    {props.numero + 1 + ' - ' + props.atendimento.nome}
+                <Text style={styles.titulo}>
+                    {' Nome do cliente: ' + atendimento.cliente}
                 </Text>
-                <Text style={{ fontSize: 15 }}>{props.atendimento.cpf}</Text>
+                <Text style={styles.texto}>
+                    {'Data: ' + atendimento.data}
+                </Text>
+                <Text style={styles.texto}>
+                    {'Hora: ' + atendimento.hora}
+                </Text>
+                <Text style={styles.texto}>
+                    {'Descrição: ' + atendimento.descricao}
+                </Text>
             </View>
-
-            <View style={styles.botao_info}>
-                <Pressable
-                    onPress={() => props.onInform(props.atendimento.id!)}>
-                    <Text style={styles.texto_botao_card}>
-                        i
-                    </Text>
-                </Pressable>
-            </View>
-
-            <View style={styles.botao_deletar}>
-
-                <Pressable
-                    onPress={() => props.onDeletar(props.atendimento.id!)}>
-                    <Text style={styles.texto_botao_card}>
-                        X
-                    </Text>
-                </Pressable>
-            </View>
-
-
         </View>
     );
 }
 
-const TelaConsAtend = ({ navigation, route }: ConsAtendProps) => {
-    const [cliente, setCliente] = useState([] as Cliente[]);
-    const [atendimento, setAtendimento] = useState([] as Atendimento[]);
+const TelaConAtend = ({ navigation, route }: ConsAtendProps) => {
+    const [atendimentos, setAtendimentos] = useState([] as Atendimento[]);
     const [isCarregando, setIsCarregando] = useState(false);
 
     useEffect(() => {
         setIsCarregando(true);
-
         const subscribe = firestore()
-            .collection('Atendimento')
+            .collection('atendimentos')
             .onSnapshot(querySnapshot => {
                 const data = querySnapshot.docs.map(doc => {
-
                     return {
                         id: doc.id,
-                        ...doc.data()
+                        ...doc.data() as Atendimento
                     }
-
                 }) as Atendimento[];
-
-                setAtendimento(data);
+                setAtendimentos(data);
                 setIsCarregando(false);
             });
-
         return () => subscribe();
     }, []);
 
-    function infoAtendimento(id: string) {
-        navigation.navigate("TelaInfoAtend", { id: id })
-    }
-
-    function deletarAtendimento(id: string) {
-
-        setIsCarregando(true);
-
-        firestore()
-            .collection('Atendimento')
-            .doc(id)
-            .delete()
-            .then(() => {
-                Alert.alert("Atendimento", " removido com sucesso")
-            })
-            .catch((error) => console.log(error))
-            .finally(() => setIsCarregando(false));
-
-    }
-
     return (
-        <ScrollView>
-            <View style={styles.container}>
-                <Carregamento isCarregando={isCarregando} />
-                <View style={styles.container_header}>
-                    <Text style={styles.titulo}>Lista de Atendimentos</Text>
-                </View>
-                <FlatList
-                    data={atendimento}
-                    renderItem={(info) =>
-                        <ItemAtendimento
-                            numero={info.index}
-                            atendimento={info.item}
-                            onDeletar={deletarAtendimento}
-                            onInform={infoAtendimento} />}>
+        <View style={styles.container}>
+            <Carregamento isCarregando={isCarregando} />
+            <View style={styles.container_header}>
+                <Text style={styles.titulo_T}>Lista de Atendimentos</Text>
+            </View>
 
-                </FlatList>
+            <FlatList
+                data={atendimentos}
+                renderItem={({ item }) =>
+                    <ItemAtendimento
+                        atendimento={item}
+                    />}
+            />
+            <View style={styles.container_body}>
                 <Pressable
                     style={styles.botao}
                     onPress={() => { navigation.goBack() }}>
-                    <Text style={styles.desc_botao}>
-                        voltar
-                    </Text>
+                    <Text style={styles.desc_botao}>Voltar</Text>
                 </Pressable>
             </View>
-        </ScrollView>
+        </View>
     );
 }
 
-export default TelaConsAtend;
+export default TelaConAtend;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#1c62be',
-        paddingBottom: '110%',
+        backgroundColor: 'rgba(20,0,300,0.5)',
     },
     container_header: {
-        flex: 1,
-        backgroundColor: '#164d96',
-        paddingBottom: 30,
+        backgroundColor: 'rgba(20,0,300,0.5)',
+        padding: 30,
+    },
+    container_body: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 40,
     },
     titulo: {
-        paddingTop: 35,
-        color: 'white',
-        fontSize: 35,
+        fontSize: 23,
         textAlign: 'center',
+        color: 'white',
+        marginBottom: 10
+    },
+    titulo_T: {
+        fontSize: 30,
+        textAlign: 'center',
+        color: 'white',
+        marginBottom: 10
     },
     card: {
-        borderWidth: 2,
-        borderColor: 'grey',
-        margin: 5,
-        marginTop: 20,
-        borderRadius: 10,
-        padding: 3,
+        borderWidth: 1,
+        borderColor: 'black',
+        marginVertical: 5,
+        borderRadius: 5,
+        padding: 5,
+        marginHorizontal: 5,
         flexDirection: 'row',
-        backgroundColor: 'white'
+        backgroundColor: 'rgba(20,100,300,0.5)'
     },
     dados_card: {
         flex: 1
     },
-    botao_deletar: {
-        backgroundColor: 'red',
-        width: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    botao_alterar: {
-        backgroundColor: 'green',
-        width: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    botao_info: {
-        backgroundColor: 'yellow',
-        width: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    texto_botao_card: {
-        fontWeight: "bold",
-        fontSize: 30,
-        color: 'black'
+    texto: {
+        fontSize: 18,
+        color: 'white',
+        marginBottom: 5
     },
     botao: {
-        backgroundColor: 'blue',
+        backgroundColor: 'indigo',
+        alignItems: 'center',
+        justifyContent: 'center',
         paddingVertical: 15,
-        marginTop: 20,
-        marginBottom: 30,
+        paddingHorizontal: 30,
         borderRadius: 10,
-        marginHorizontal: 100,
+        marginBottom: 15,
+        shadowColor: '#000000',
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
     },
     desc_botao: {
-        textAlign: 'center',
-        fontSize: 25,
-        color: 'white'
+        fontSize: 18,
+        color: '#FFFFFF',
     },
 });

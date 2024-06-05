@@ -1,23 +1,35 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Pressable, Image, Alert, ScrollViewComponent, ScrollView } from 'react-native';
-import { CadProps } from '../navigation/HomeNavigator';
-import auth from "@react-native-firebase/auth"
-import Carregamento from '../navigation/Carregamento';
+import { StyleSheet, Text, View, TextInput, Pressable, Image, Alert, ImageBackground } from 'react-native';
 
-const Cadastro = ({ navigation, route }: CadProps) => {
+import auth from "@react-native-firebase/auth";
+import { CadUsuarioProps } from '../navigation/HomeNavigator';
+import Carregamento from '../navigation/Carregamento'
+
+const Cadastro = ({ navigation, route }: CadUsuarioProps) => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
-    const [confSenha, setConfSenha] = useState('');
+    const [confirmaSenha, setConfirmaSenha] = useState('');
     const [isCarregando, setIsCarregando] = useState(false);
 
-    async function cadastro() {
+    function login() {
+
+        if (verificaCampos()) {
+
+            auth()
+                .signInWithEmailAndPassword(email, senha)
+                .then(() => { Alert.alert('Logado com sucesso') })
+                .catch((error) => tratarErros(String(error)))
+        }
+    }
+
+    async function cadastrar() {
+        setIsCarregando(true);
+
         if (verificaCampos()) {
             auth()
                 .createUserWithEmailAndPassword(email, senha)
                 .then(() => {
-                    Alert.alert("conta",
-                        "cadastrado com sucesso!"
-                    )
+                    Alert.alert("Conta", "Cadastrada com sucesso")
                     navigation.goBack();
                 })
                 .catch((error) => { tratarErros(String(error)) })
@@ -25,34 +37,24 @@ const Cadastro = ({ navigation, route }: CadProps) => {
                     setIsCarregando(false)
                 });
         }
-        setIsCarregando(false);
+        setIsCarregando;
     }
 
     function verificaCampos() {
-        let resultado = true;
-
         if (email == '') {
             Alert.alert("Email em branco", "Digite um email")
             return false;
         }
-
-        //
-
-
         if (senha == '') {
             Alert.alert("Senha em branco", "Digite uma senha")
             return false;
         }
-        if (confSenha == '') {
-            Alert.alert("Comfirmação de senha em branco!",
-                "Digite a confirmação de senha"
-            )
+        if (confirmaSenha == '') {
+            Alert.alert("Confirmação de senha em branco", "Digite a confirmção de senha")
             return false;
         }
-        if (senha != confSenha) {
-            Alert.alert("Comfirmação de senha em branco!",
-                "Digite a confirmação de senha"
-            )
+        if (senha != confirmaSenha) {
+            Alert.alert("Senhas diferentes", "Digite senha iguais")
             return false;
         }
 
@@ -64,67 +66,54 @@ const Cadastro = ({ navigation, route }: CadProps) => {
         if (erro.includes("[auth/invalid-email]")) {
             Alert.alert("Email inválido", "Digite um email válido")
         } else if (erro.includes("[auth/weak-password]")) {
-            Alert.alert("Senha fraca", "A senha deve conter no mínimo 6 dígitos.")
-        }
-        else if (erro.includes("[auth/email-already-in-use]")) {
-            Alert.alert("email em uso", "O email inserido já foi cadastrado em outra conta.")
+            Alert.alert("Senha Fraca", "A senha digitada é fraca. A senha deve pelo " + "menos 6 dígitos.")
+        } else if (erro.includes("[auth/email-already-in-use]")) {
+            Alert.alert("Email em uso", "O email inserido já foi cadastrado em outra conta.")
         } else {
             Alert.alert("Erro", erro)
         }
     }
 
     return (
-        <ScrollView>
-            <View style={styles.container}>
-                <Carregamento isCarregando={isCarregando} />
-                <View style={styles.painel_imagem}>
-                    <Image
-                        style={styles.imagem}
-                        source={{ uri: 'https://i.pinimg.com/550x/27/7c/a6/277ca68ddbc11cae8388225700965d61.jpg' }} />
-                </View>
-
-                <View style={styles.container_cadastro}>
-                    <Text
-                        style={styles.titulo_caixa_texto}>
-                        Email
-                    </Text>
-                    <TextInput
-                        style={styles.caixa_texto}
-                        onChangeText={(text) => { setEmail(text) }} />
-                    <Text
-                        style={styles.titulo_caixa_texto}>
-                        Senha
-                    </Text>
-                    <TextInput
-                        style={styles.caixa_texto}
-                        secureTextEntry={true}
-                        onChangeText={(text) => { setSenha(text) }} />
-                    <Text
-                        style={styles.titulo_caixa_texto}>
-                        Confirmar senha
-                    </Text>
-                    <TextInput
-                        style={styles.caixa_texto}
-                        secureTextEntry={true}
-                        onChangeText={(text) => { setConfSenha(text) }} />
-
-                    <View style={styles.container_botao}>
-                        <Pressable
-                            style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                            onPress={() => cadastro()}
-                            disabled={isCarregando}>
-                            <Text style={styles.desc_botao}>Cadastrar</Text>
-                        </Pressable>
-
-                        <Pressable
-                            style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                            onPress={() => { navigation.navigate('TelaLogin') }}>
-                            <Text style={styles.desc_botao}>Logar</Text>
-                        </Pressable>
-                    </View>
-                </View>
+        <>
+            <View style={styles.overlay}>
+                <Image
+                    source={{
+                        uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9vlmDxgC4bB3txRrBZLQmiAhy69KVGA5roA&usqp=CAU'
+                    }}
+                    style={styles.logo}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Digite seu email"
+                    onChangeText={(text) => { setEmail(text) }}
+                />
+                <TextInput
+                    style={styles.input}
+                    secureTextEntry={true}
+                    placeholder="Digite sua senha"
+                    onChangeText={(text) => { setSenha(text) }}
+                />
+                <TextInput
+                    style={styles.input}
+                    secureTextEntry={true}
+                    placeholder="Confirme sua senha"
+                    onChangeText={(text) => { setConfirmaSenha(text) }}
+                />
+                <Pressable
+                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
+                    onPress={() => { cadastrar() }}
+                >
+                    <Text style={styles.botaoText}>Cadastrar</Text>
+                </Pressable>
+                <Pressable
+                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
+                    onPress={() => { navigation.goBack() }}
+                >
+                    <Text style={styles.botaoText}>Voltar ao login</Text>
+                </Pressable>
             </View>
-        </ScrollView>
+        </>
     );
 }
 
@@ -132,54 +121,53 @@ export default Cadastro;
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 10,
         flex: 1,
-        backgroundColor: '#1c62be'
-    },
-    container_cadastro: {
-        flex: 2,
-        alignItems: 'center'
-    },
-    container_botao: {
+        justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: 15,
-        paddingBottom: 20,
     },
-    titulo_caixa_texto: {
-        paddingTop: 10,
-        fontSize: 25,
-        color: 'black',
+    overlay: {
+        backgroundColor: 'rgba(20,0,300,0.5)', // Um overlay preto com 50% de opacidade
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    caixa_texto: {
-        width: '70%',
-        color: 'black',
-        borderWidth: 1,
+    logo: {
+        width: 200,
+        height: 200,
         borderRadius: 4,
-        margin: 3,
-        backgroundColor: 'white',
-        fontSize: 20,
+        marginBottom: 20,
+    },
+    input: {
+        marginTop: 15,
+        padding: 10,
+        width: 300,
+        backgroundColor: '#fff',
+        fontSize: 19,
+        fontWeight: 'bold',
+        borderRadius: 3,
+        color: 'black'
     },
     botao: {
-        justifyContent: 'center',
-        backgroundColor: 'blue',
-        paddingVertical: 10,
-        paddingHorizontal: 30,
-        marginTop: 20,
-        borderRadius: 10,
-    },
-    desc_botao: {
-        fontSize: 20,
-        color: 'white'
-    },
-    painel_imagem: {
-        paddingTop: 20,
-        marginBottom: 15,
-        flex: 1,
+        width: 160,
+        height: 42,
+        backgroundColor: 'indigo',
+        marginTop: 15,
+        borderRadius: 4,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
-    imagem: {
-        width: 300,
-        height: 300,
+    botao_es: {
+        width: 160,
+        height: 42,
+        marginTop: 30,
+        borderRadius: 4,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    botaoText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#fff',
     }
 });
