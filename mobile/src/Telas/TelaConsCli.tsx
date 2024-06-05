@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useId } from "react";
 import { Alert, Pressable, FlatList, StyleSheet, Text, View, ScrollView } from "react-native";
 
 import firestore from "@react-native-firebase/firestore";
@@ -18,45 +18,43 @@ type ClienteProps = {
 const ItemCliente = (props: ClienteProps) => {
 
     return (
-        <ScrollView>
-            <View style={styles.card}>
-                <View style={styles.dados_card}>
-                    <Text style={{ fontSize: 35 }}>
-                        {props.numero + 1 + ' - ' + props.cliente.nome}
-                    </Text>
-                    <Text style={{ fontSize: 20 }}>{props.cliente.cpf}</Text>
-                </View>
-
-                <View style={styles.botao_info}>
-                    <Pressable
-                        onPress={() => props.onInform(props.cliente.id!)}>
-                        <Text style={styles.texto_botao_card}>
-                            i
-                        </Text>
-                    </Pressable>
-                </View>
-                <View style={styles.botao_alterar}>
-                    <Pressable
-                        onPress={() => props.onAlterar(props.cliente.id!)}>
-                        <Text style={styles.texto_botao_card}>
-                            A
-                        </Text>
-                    </Pressable>
-                </View>
-
-                <View style={styles.botao_deletar}>
-
-                    <Pressable
-                        onPress={() => props.onDeletar(props.cliente.id!)}>
-                        <Text style={styles.texto_botao_card}>
-                            X
-                        </Text>
-                    </Pressable>
-                </View>
-
-
+        <View style={styles.card}>
+            <View style={styles.dados_card}>
+                <Text style={{ fontSize: 25 }}>
+                    {props.numero + 1 + ' - ' + props.cliente.nome}
+                </Text>
+                <Text style={{ fontSize: 15 }}>{props.cliente.cpf}</Text>
             </View>
-        </ScrollView>
+
+            <View style={styles.botao_info}>
+                <Pressable
+                    onPress={() => props.onInform(props.cliente.id!)}>
+                    <Text style={styles.texto_botao_card}>
+                        i
+                    </Text>
+                </Pressable>
+            </View>
+            <View style={styles.botao_alterar}>
+                <Pressable
+                    onPress={() => props.onAlterar(props.cliente.id!)}>
+                    <Text style={styles.texto_botao_card}>
+                        A
+                    </Text>
+                </Pressable>
+            </View>
+
+            <View style={styles.botao_deletar}>
+
+                <Pressable
+                    onPress={() => props.onDeletar(props.cliente.id!)}>
+                    <Text style={styles.texto_botao_card}>
+                        X
+                    </Text>
+                </Pressable>
+            </View>
+
+
+        </View>
     );
 }
 
@@ -114,7 +112,7 @@ const TelaConsCli = ({ navigation, route }: ConsCliProps) => {
             <View style={styles.container}>
                 <Carregamento isCarregando={isCarregando} />
                 <View style={styles.container_header}>
-                    <Text style={styles.titulo}>Listagem de clientes</Text>
+                    <Text style={styles.titulo}>Lista de clientes</Text>
                 </View>
                 <FlatList
                     data={cliente}
@@ -150,10 +148,10 @@ const styles = StyleSheet.create({
     container_header: {
         flex: 1,
         backgroundColor: '#164d96',
-        paddingBottom: 50,
+        paddingBottom: 30,
     },
     titulo: {
-        paddingTop: 55,
+        paddingTop: 35,
         color: 'white',
         fontSize: 35,
         textAlign: 'center',
@@ -191,7 +189,7 @@ const styles = StyleSheet.create({
     },
     texto_botao_card: {
         fontWeight: "bold",
-        fontSize: 40,
+        fontSize: 30,
         color: 'black'
     },
     botao: {
@@ -200,11 +198,11 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 30,
         borderRadius: 10,
-        marginHorizontal: 80,
+        marginHorizontal: 100,
     },
     desc_botao: {
         textAlign: 'center',
-        fontSize: 35,
+        fontSize: 25,
         color: 'white'
     },
 });

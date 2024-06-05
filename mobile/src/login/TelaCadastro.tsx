@@ -74,53 +74,57 @@ const Cadastro = ({ navigation, route }: CadProps) => {
     }
 
     return (
-        <View style={styles.container}>
-            <Carregamento isCarregando={isCarregando} />
-            <View style={styles.painel_imagem}>
-                <Image
-                    style={styles.imagem}
-                    source={{ uri: '//////////////' }} />
+        <ScrollView>
+            <View style={styles.container}>
+                <Carregamento isCarregando={isCarregando} />
+                <View style={styles.painel_imagem}>
+                    <Image
+                        style={styles.imagem}
+                        source={{ uri: 'https://i.pinimg.com/550x/27/7c/a6/277ca68ddbc11cae8388225700965d61.jpg' }} />
+                </View>
+
+                <View style={styles.container_cadastro}>
+                    <Text
+                        style={styles.titulo_caixa_texto}>
+                        Email
+                    </Text>
+                    <TextInput
+                        style={styles.caixa_texto}
+                        onChangeText={(text) => { setEmail(text) }} />
+                    <Text
+                        style={styles.titulo_caixa_texto}>
+                        Senha
+                    </Text>
+                    <TextInput
+                        style={styles.caixa_texto}
+                        secureTextEntry={true}
+                        onChangeText={(text) => { setSenha(text) }} />
+                    <Text
+                        style={styles.titulo_caixa_texto}>
+                        Confirmar senha
+                    </Text>
+                    <TextInput
+                        style={styles.caixa_texto}
+                        secureTextEntry={true}
+                        onChangeText={(text) => { setConfSenha(text) }} />
+
+                    <View style={styles.container_botao}>
+                        <Pressable
+                            style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
+                            onPress={() => cadastro()}
+                            disabled={isCarregando}>
+                            <Text style={styles.desc_botao}>Cadastrar</Text>
+                        </Pressable>
+
+                        <Pressable
+                            style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
+                            onPress={() => { navigation.navigate('TelaLogin') }}>
+                            <Text style={styles.desc_botao}>Logar</Text>
+                        </Pressable>
+                    </View>
+                </View>
             </View>
-
-            <View style={styles.container_cadastro}>
-                <Text
-                    style={styles.titulo_caixa_texto}>
-                    Email
-                </Text>
-                <TextInput
-                    style={styles.caixa_texto}
-                    onChangeText={(text) => { setEmail(text) }} />
-                <Text
-                    style={styles.titulo_caixa_texto}>
-                    Senha
-                </Text>
-                <TextInput
-                    style={styles.caixa_texto}
-                    secureTextEntry={true}
-                    onChangeText={(text) => { setSenha(text) }} />
-                <Text
-                    style={styles.titulo_caixa_texto}>
-                    Confirmar senha
-                </Text>
-                <TextInput
-                    style={styles.caixa_texto}
-                    secureTextEntry={true}
-                    onChangeText={(text) => { setConfSenha(text) }} />
-
-                <Pressable
-                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                    onPress={() => cadastro()}
-                    disabled={isCarregando}>
-                    <Text style={styles.desc_botao}>Cadastrar</Text>
-                </Pressable>
-
-                <Pressable
-                    style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                    onPress={() => { navigation.navigate('TelaLogin') }}>
-                    <Text style={styles.desc_botao}>Logar</Text>
-                </Pressable>
-            </View>
-        </View>
+        </ScrollView>
     );
 }
 
@@ -136,6 +140,11 @@ const styles = StyleSheet.create({
         flex: 2,
         alignItems: 'center'
     },
+    container_botao: {
+        alignItems: 'center',
+        paddingTop: 15,
+        paddingBottom: 20,
+    },
     titulo_caixa_texto: {
         paddingTop: 10,
         fontSize: 25,
@@ -147,28 +156,30 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 4,
         margin: 3,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        fontSize: 20,
     },
     botao: {
         justifyContent: 'center',
         backgroundColor: 'blue',
         paddingVertical: 10,
         paddingHorizontal: 30,
-        marginTop: 30,
-        borderRadius: 10
+        marginTop: 20,
+        borderRadius: 10,
     },
     desc_botao: {
         fontSize: 20,
         color: 'white'
     },
     painel_imagem: {
+        paddingTop: 20,
+        marginBottom: 15,
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center'
     },
     imagem: {
-        width: 200,
-        height: 200,
-        resizeMode: "center"
+        width: 300,
+        height: 300,
     }
 });
