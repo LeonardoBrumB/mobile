@@ -1,27 +1,111 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Pressable, ScrollView, TextInput, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Pressable, ScrollView, TextInput, Alert, FlatList } from 'react-native';
 import { CadAtendProps } from '../navigation/HomeNavigator';
 import Carregamento from '../navigation/Carregamento';
 import { Atendimento } from '../Model/Atendimento';
+import { Cliente } from '../Model/Cliente';
 import firestore from "@react-native-firebase/firestore";
 
-
-
-////////////// alterar atendimento, info atendimento //////////
-
-
-
-
-
-
 const TelaCadAtend = ({ navigation, route }: CadAtendProps) => {
+    const [isCarregando, setIsCarregando] = useState(false);
     const [id,] = useState('');
-    const [nome,] = useState('');
-    const [cpf,] = useState('');
+    const [nome, setNome] = useState('');
+    const [cpf, setCpf] = useState('');
     const [data, setData] = useState('');
     const [hora, setHora] = useState('');
     const [descricao, setDescricao] = useState('');
-    const [isCarregando, setIsCarregando] = useState(false);
+
+    async function carregar() {
+        setIsCarregando(true);
+        const resultado = await firestore()
+            .collection('cliente')
+            .doc(id)
+            .get();
+
+        const cliente = {
+            id: resultado.id,
+            ...resultado.data()
+        } as Cliente;
+
+        setNome(cliente.nome);
+        setCpf(cliente.cpf);
+        setIsCarregando(false);
+    };
+
+    useEffect(() => {
+        carregar();
+    }, []);
+
+    return (
+        <ScrollView>
+            <View style={styles.container_header}>
+                <Text style={styles.titulo}>
+                    Cadastrar atendimento
+                </Text>
+            </View>
+            <View style={styles.container}>
+                <View style={styles.caixas}>
+                    <Text style={styles.titulo_caixa_texto}>
+                        Nome:
+                    </Text>
+                    <TextInput style={styles.titulo_caixa_texto_r}
+                        value={nome}>
+
+                    </TextInput>
+
+                    <Text style={styles.titulo_caixa_texto}>
+                        Cpf:
+                    </Text>
+                    <TextInput style={styles.titulo_caixa_texto_r}
+                        value={cpf}>
+                    </TextInput>
+
+                    <Text style={styles.titulo_caixa_texto}>
+                        Data:
+                    </Text>
+                    <TextInput style={styles.caixa_texto}
+                        onChangeText={(text) => { setData(text) }}
+                        keyboardType='numeric'>
+
+                    </TextInput>
+
+                    <Text style={styles.titulo_caixa_texto}>
+                        Hora:
+                    </Text>
+                    <TextInput style={styles.caixa_texto}
+                        onChangeText={(text) => { setHora(text.toString()) }}
+                        keyboardType='numeric'>
+
+                    </TextInput>
+
+                    <Text style={styles.titulo_caixa_texto}>
+                        Descrição:
+                    </Text>
+                    <TextInput style={styles.caixa_texto}
+                        multiline
+                        numberOfLines={8}
+                        maxLength={200}
+                        onChangeText={(text) => { setDescricao(text) }}>
+
+                    </TextInput>
+
+                </View>
+                <View style={styles.caixa_botao}>
+                    <Pressable
+                        style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
+                        onPress={() => cadastrar()}>
+                        <Text style={styles.desc_botao}>Cadastrar Atendimento</Text>
+                    </Pressable>
+
+                    <Pressable
+                        style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
+                        onPress={() => { navigation.navigate('TelaConsCliToAtend') }}>
+                        <Text style={styles.desc_botao}>voltar</Text>
+                    </Pressable>
+                </View>
+            </View>
+        </ScrollView>
+    );
 
     function cadastrar() {
         setIsCarregando(true);
@@ -70,104 +154,6 @@ const TelaCadAtend = ({ navigation, route }: CadAtendProps) => {
 
         return true;
     }
-
-    function formataData(data) {
-        const dataAtual = data.value
-
-        let dataAtualizada;
-
-        dataAtualizada = dataAtual.replace(/(\d{2})(\d{2})(\d{4})/,
-            function (regex, argumento1, argumento2, argumento3) {
-                return argumento1 + '/' + argumento2 + '/' + argumento3;
-            })
-        data = dataAtualizada;
-    }
-
-    function formataHora(hora) {
-        const horaAtual = hora.value
-
-        let horaAtualizada;
-
-        horaAtualizada = horaAtual.replace(/(\d{2})(\d{2})/,
-            function (regex, argumento1, argumento2) {
-                return argumento1 + ':' + argumento2;
-            })
-        hora = horaAtualizada;
-    }
-
-
-    return (
-        <ScrollView>
-            <View style={styles.container_header}>
-                <Text style={styles.titulo}>
-                    Cadastrar atendimento para {nome}
-                </Text>
-            </View>
-            <View style={styles.container}>
-                <View style={styles.caixas}>
-                    <Text style={styles.titulo_caixa_texto}>
-                        Nome:
-                    </Text>
-                    <Text style={styles.caixa_texto}>
-                        {nome}
-                    </Text>
-
-                    <Text style={styles.titulo_caixa_texto}>
-                        Cpf:
-                    </Text>
-                    <Text style={styles.caixa_texto}>
-                        {cpf}
-                    </Text>
-
-                    <Text style={styles.titulo_caixa_texto}>
-                        Data:
-                    </Text>
-                    <TextInput style={styles.caixa_texto}
-                        onChangeText={(text) => { setData(text) }}
-                        keyboardType='numeric'>
-                        {formataData(data)}
-
-                    </TextInput>
-
-                    <Text style={styles.titulo_caixa_texto}>
-                        Hora:
-                    </Text>
-                    <TextInput style={styles.caixa_texto}
-                        onChangeText={(text) => { setHora(text.toString()) }}
-                        keyboardType='numeric'>
-                        {formataHora(hora)}
-
-                    </TextInput>
-
-                    <Text style={styles.titulo_caixa_texto}>
-                        Descrição:
-                    </Text>
-                    <TextInput style={styles.caixa_texto}
-                        multiline
-                        numberOfLines={8}
-                        maxLength={200}
-                        onChangeText={(text) => { setDescricao(text) }}>
-
-                    </TextInput>
-
-                </View>
-                <View style={styles.caixa_botao}>
-                    <Pressable
-                        style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                        onPress={() => cadastrar()}
-                        disabled={isCarregando}>
-                        <Text style={styles.desc_botao}>Cadastrar Atendimento</Text>
-                    </Pressable>
-
-                    <Pressable
-                        style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                        onPress={() => { navigation.navigate('TelaConsCliToAtend') }}>
-                        <Text style={styles.desc_botao}>voltar</Text>
-                    </Pressable>
-                </View>
-            </View>
-        </ScrollView >
-    );
 }
 
 export default TelaCadAtend;
@@ -209,6 +195,12 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     titulo_caixa_texto: {
+        paddingTop: 10,
+        fontSize: 35,
+        color: 'black',
+        paddingBottom: 10,
+    },
+    titulo_caixa_texto_r: {
         paddingTop: 10,
         fontSize: 25,
         color: 'black',

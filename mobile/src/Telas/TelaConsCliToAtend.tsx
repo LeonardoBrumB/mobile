@@ -7,41 +7,19 @@ import { ConsCliToAtendProps } from "../navigation/HomeNavigator";
 import Carregamento from "../navigation/Carregamento";
 import TelaPrincipal from "./TelaPrincipal";
 
-
-
-
-
-
-
-
-///////////////////////// PESQUISAR CLIENTE ///////////////
-
-
-
-
-
-
-
-
-
-
-
 type ClienteProps = {
     numero: number;
     cliente: Cliente;
     onAtend: (id: string) => void;
+    onVoltar: (id: string) => void
 }
 
 const ItemCliente = (props: ClienteProps) => {
 
     return (
         <ScrollView>
-            <View style={styles.container_header}>
-                <Text style={styles.titulo}>
-                    Qual cliente deseja fazer o atendimento?
-                </Text>
-            </View>
-            <View style={styles.container}>
+
+            <View style={styles.container_card}>
                 <View style={styles.card}>
                     <View style={styles.dados_card}>
                         <Text style={{ fontSize: 35 }}>
@@ -59,12 +37,7 @@ const ItemCliente = (props: ClienteProps) => {
                         </Pressable>
                     </View>
                 </View>
-                <Pressable style={styles.botao}
-                    onPress={() => { Navigation.navigate('TelaPrincipal') }}>
-                    <Text style={styles.desc_botao}>
-                        voltar
-                    </Text>
-                </Pressable>
+
             </View>
         </ScrollView>
     );
@@ -98,25 +71,42 @@ const TelaConsCliToAtend = ({ navigation, route }: ConsCliToAtendProps) => {
         return () => subscribe();
     }, []);
 
-    function infoCliente(id: string) {
-        navigation.navigate("TelaInfoAted", { id: id })
+    function AtendCliente(id: string) {
+        navigation.navigate("TelaCadAtend", { id: id })
+    }
+    function voltar() {
+        navigation.navigate("TelaPrincipal")
     }
 
     return (
-        <View style={styles.container}>
-            <Carregamento isCarregando={isCarregando} />
+        <ScrollView>
 
-            <Text style={styles.titulo}>Listagem de clientes</Text>
+            <Carregamento isCarregando={isCarregando} />
+            <View style={styles.container_header}>
+                <Text style={styles.titulo}>
+                    Qual cliente deseja fazer o atendimento?
+                </Text>
+            </View>
             <FlatList
                 data={cliente}
                 renderItem={(info) =>
                     <ItemCliente
                         numero={info.index}
                         cliente={info.item}
-                        onAtend={infoCliente} />
+                        onAtend={AtendCliente}
+                        onVoltar={voltar} />}>
 
-        </FlatList>
-        </View >
+            </FlatList>
+
+            <View style={styles.container}>
+                <Pressable style={styles.botao}
+                    onPress={() => { navigation.navigate('TelaPrincipal') }}>
+                    <Text style={styles.desc_botao}>
+                        voltar
+                    </Text>
+                </Pressable>
+            </View>
+        </ScrollView>
     );
 }
 
@@ -125,22 +115,29 @@ export default TelaConsCliToAtend;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#1c62be'
+        backgroundColor: '#1c62be',
+        paddingBottom: '100%',
+    },
+    container_card: {
+        backgroundColor: '#1c62be',
+
     },
     container_header: {
         flex: 1,
         backgroundColor: '#164d96',
-        paddingBottom: 80,
+        paddingBottom: 50,
     },
     titulo: {
         fontSize: 40,
         textAlign: 'center',
-        color: 'black'
+        color: 'white',
+        paddingTop: 40,
     },
     card: {
         borderWidth: 2,
         borderColor: 'grey',
         margin: 5,
+        marginTop: 25,
         borderRadius: 10,
         padding: 3,
         flexDirection: 'row',
@@ -149,8 +146,8 @@ const styles = StyleSheet.create({
     dados_card: {
         flex: 1
     },
-    botao_Atend: {
-        backgroundColor: 'grey',
+    botao_atend: {
+        backgroundColor: 'green',
         width: 40,
         justifyContent: 'center',
         alignItems: 'center',

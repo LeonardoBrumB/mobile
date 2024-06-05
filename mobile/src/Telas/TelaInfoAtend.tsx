@@ -1,28 +1,24 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Pressable, ScrollView, TextInput, Alert, FlatList } from 'react-native';
-import { InfoCliProps } from '../navigation/HomeNavigator';
+import { InfoAtendProps, InfoCliProps } from '../navigation/HomeNavigator';
 import Carregamento from '../navigation/Carregamento';
-import { Cliente } from '../Model/Cliente';
 import firestore from "@react-native-firebase/firestore";
+import { Atendimento } from '../Model/Atendimento';
 
-type ClienteProps = {
+type AtendimentoProps = {
     numero: number;
-    cliente: Cliente;
+    atendimento: Atendimento;
     onAlterar: (id: string) => void;
     onVoltar: (id: string) => void;
 }
 
-const ItemCliente = (props: ClienteProps) => {
+const ItemAtendimento = (props: AtendimentoProps) => {
     const [id,] = useState('');
     const [nome,] = useState('');
     const [cpf,] = useState('');
-    const [rua,] = useState('');
-    const [numero,] = useState('');
-    const [bairro,] = useState('');
-    const [complemento,] = useState('');
-    const [cidade,] = useState('');
-    const [estado,] = useState('');
-    const [dataNasc,] = useState('');
+    const [data,] = useState('');
+    const [hora,] = useState('');
+    const [descricao,] = useState('');
     const [isCarregando,] = useState(false);
 
 
@@ -30,7 +26,7 @@ const ItemCliente = (props: ClienteProps) => {
         <ScrollView>
             <View style={styles.container_header}>
                 <Text style={styles.titulo}>
-                    Cadastro de cliente
+                    Informação do atendimento
                 </Text>
             </View>
             <View style={styles.container}>
@@ -54,78 +50,42 @@ const ItemCliente = (props: ClienteProps) => {
                     //////////
 
                     <Text style={styles.titulo_caixa_texto}>
-                        Rua:
+                        Data:
                     </Text>
                     <Text style={styles.caixa_texto}>
-                        {rua}
+                        {data}
                     </Text>
 
                     //////////
 
                     <Text style={styles.titulo_caixa_texto}>
-                        Número:
+                        Hora:
                     </Text>
                     <Text style={styles.caixa_texto}>
-                        {numero}
+                        {hora}
                     </Text>
 
                     //////////
 
                     <Text style={styles.titulo_caixa_texto}>
-                        Bairro:
+                        Descrição:
                     </Text>
                     <Text style={styles.caixa_texto}>
-                        {bairro}
-                    </Text>
-
-                    //////////
-
-                    <Text style={styles.titulo_caixa_texto}>
-                        Complemento:
-                    </Text>
-                    <Text style={styles.caixa_texto}>
-                        {complemento}
-                    </Text>
-
-                    //////////
-
-                    <Text style={styles.titulo_caixa_texto}>
-                        Cidade:
-                    </Text>
-                    <Text style={styles.caixa_texto}>
-                        {cidade}
-                    </Text>
-
-                    //////////
-
-                    <Text style={styles.titulo_caixa_texto}>
-                        Estado:
-                    </Text>
-                    <Text style={styles.caixa_texto}>
-                        {estado}
-                    </Text>
-
-                    //////////
-
-                    <Text style={styles.titulo_caixa_texto}>
-                        Data de nascimento:
-                    </Text>
-                    <Text style={styles.caixa_texto}>
-                        {dataNasc}
+                        {descricao}
                     </Text>
 
                 </View>
                 <View style={styles.caixa_botao}>
                     <Pressable
                         style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                        onPress={() => props.onAlterar(props.cliente.id!)}
+                        onPress={() => props.onAlterar(props.atendimento.id!)}
                         disabled={isCarregando}>
                         <Text style={styles.desc_botao}>Alterar</Text>
                     </Pressable>
 
                     <Pressable
                         style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                        onPress={() => props.onVoltar(props.cliente.id)}>
+                        onPress={() => props.onVoltar(props.atendimento.id)}>
                         <Text style={styles.desc_botao}>voltar</Text>
                     </Pressable>
                 </View>
@@ -136,9 +96,9 @@ const ItemCliente = (props: ClienteProps) => {
 }
 
 
-const TelaInfoCli = ({ navigation, route }: InfoCliProps) => {
+const TelaInfoAtend = ({ navigation, route }: InfoAtendProps) => {
     const [isCarregando,] = useState(false);
-    const [cliente,] = useState([] as Cliente[]);
+    const [cliente,] = useState([] as Atendimento[]);
 
 
     function alterarCliente(id: string) {
@@ -154,9 +114,9 @@ const TelaInfoCli = ({ navigation, route }: InfoCliProps) => {
             <FlatList
                 data={cliente}
                 renderItem={(info) =>
-                    <ItemCliente
+                    <ItemAtendimento
                         numero={info.index}
-                        cliente={info.item}
+                        atendimento={info.item}
                         onAlterar={alterarCliente}
                         onVoltar={voltar} />}>
 
@@ -166,7 +126,7 @@ const TelaInfoCli = ({ navigation, route }: InfoCliProps) => {
 
 }
 
-export default TelaInfoCli;
+export default TelaInfoAtend;
 
 const styles = StyleSheet.create({
     container: {

@@ -7,22 +7,6 @@ import { ConsCliProps } from "../navigation/HomeNavigator";
 import Carregamento from "../navigation/Carregamento";
 
 
-
-
-
-
-
-///////////////////////// PESQUISAR CLIENTE ///////////////
-
-
-
-
-
-
-
-
-
-
 type ClienteProps = {
     numero: number;
     cliente: Cliente;
@@ -70,6 +54,7 @@ const ItemCliente = (props: ClienteProps) => {
                     </Pressable>
                 </View>
 
+
             </View>
         </ScrollView>
     );
@@ -110,41 +95,47 @@ const TelaConsCli = ({ navigation, route }: ConsCliProps) => {
 
     function deletarCliente(id: string) {
 
-        if (confirm('realmente deseja deletar o cliente?') == true) {
-            setIsCarregando(true);
+        setIsCarregando(true);
 
-            firestore()
-                .collection('cliente')
-                .doc(id)
-                .delete()
-                .then(() => {
-                    Alert.alert("Cliente removido com sucesso")
-                })
-                .catch((error) => console.log(error))
-                .finally(() => setIsCarregando(false));
-        } else {
-            return false;
-        }
+        firestore()
+            .collection('cliente')
+            .doc(id)
+            .delete()
+            .then(() => {
+                Alert.alert("Cliente removido com sucesso")
+            })
+            .catch((error) => console.log(error))
+            .finally(() => setIsCarregando(false));
 
     }
 
     return (
-        <View style={styles.container}>
-            <Carregamento isCarregando={isCarregando} />
+        <ScrollView>
+            <View style={styles.container}>
+                <Carregamento isCarregando={isCarregando} />
+                <View style={styles.container_header}>
+                    <Text style={styles.titulo}>Listagem de clientes</Text>
+                </View>
+                <FlatList
+                    data={cliente}
+                    renderItem={(info) =>
+                        <ItemCliente
+                            numero={info.index}
+                            cliente={info.item}
+                            onAlterar={alterarCliente}
+                            onDeletar={deletarCliente}
+                            onInform={infoCliente} />}>
 
-            <Text style={styles.titulo}>Listagem de clientes</Text>
-            <FlatList
-                data={cliente}
-                renderItem={(info) =>
-                    <ItemCliente
-                        numero={info.index}
-                        cliente={info.item}
-                        onAlterar={alterarCliente}
-                        onDeletar={deletarCliente}
-                        onInform={infoCliente} />}>
-
-            </FlatList>
-        </View>
+                </FlatList>
+                <Pressable
+                    style={styles.botao}
+                    onPress={() => { navigation.navigate('TelaPrincipal') }}>
+                    <Text style={styles.desc_botao}>
+                        voltar
+                    </Text>
+                </Pressable>
+            </View>
+        </ScrollView>
     );
 }
 
@@ -153,17 +144,25 @@ export default TelaConsCli;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#1c62be'
+        backgroundColor: '#1c62be',
+        paddingBottom: '100%',
+    },
+    container_header: {
+        flex: 1,
+        backgroundColor: '#164d96',
+        paddingBottom: 50,
     },
     titulo: {
-        fontSize: 40,
+        paddingTop: 55,
+        color: 'white',
+        fontSize: 35,
         textAlign: 'center',
-        color: 'black'
     },
     card: {
         borderWidth: 2,
         borderColor: 'grey',
         margin: 5,
+        marginTop: 20,
         borderRadius: 10,
         padding: 3,
         flexDirection: 'row',
@@ -194,5 +193,18 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 40,
         color: 'black'
-    }
+    },
+    botao: {
+        backgroundColor: 'blue',
+        paddingVertical: 15,
+        marginTop: 20,
+        marginBottom: 30,
+        borderRadius: 10,
+        marginHorizontal: 80,
+    },
+    desc_botao: {
+        textAlign: 'center',
+        fontSize: 35,
+        color: 'white'
+    },
 });
