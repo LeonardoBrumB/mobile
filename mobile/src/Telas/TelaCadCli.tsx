@@ -96,25 +96,26 @@ const TelaCadCli = ({ navigation, route }: CadCliProps) => {
         return true;
     }
 
-    const formataCpf = (text: string) => {
-        let cpfFormat = text.replace(/\D/g, '');
+    const formatarCPF = (text: string) => {
+        let cpfFormatado = text.replace(/\D/g, '');
 
-        if (cpfFormat.length > 3) {
-            cpfFormat = cpfFormat.replace(/^(\d{3})(\d)/g, '$1.$2');
-            if (cpfFormat.length > 7) {
-                cpfFormat = cpfFormat.replace(/^(\d{3})\.(\d{3})(\d)/g, '$1.$2.$3');
-                if (cpfFormat.length > 11) {
-                    cpfFormat = cpfFormat.replace(/^(\d{3})\.(\d{3})\.(\d{ 3})(\d)/g, '$1.$2.$3-$4');
+        if (cpfFormatado.length > 3) {
+            cpfFormatado = cpfFormatado.replace(/^(\d{3})(\d)/g, '$1.$2');
+            if (cpfFormatado.length > 7) {
+                cpfFormatado = cpfFormatado.replace(/^(\d{3}).(\d{3})(\d)/g, '$1.$2.$3');
+                if (cpfFormatado.length > 11) {
+                    cpfFormatado = cpfFormatado.replace(/^(\d{3}).(\d{3}).(\d{3})(\d)/g, '$1.$2.$3-$4');
                 }
             }
         }
-        return cpfFormat.substring(0, 14);
-    }
 
-    const ajustaCpf = (text: string) => {
-        const cpfFormatado = formataCpf(text);
+        return cpfFormatado.substring(0, 14);
+    };
+
+    const ajustarCPF = (text: string) => {
+        const cpfFormatado = formatarCPF(text);
         setCpf(cpfFormatado);
-    }
+    };
 
     const formataData = (text: string) => {
         let cpfFormat = text.replace(/\D/g, '');
@@ -155,9 +156,11 @@ const TelaCadCli = ({ navigation, route }: CadCliProps) => {
                         Cpf:
                     </Text>
                     <TextInput style={styles.caixa_texto}
-                        onChangeText={ajustaCpf}
+                        onChangeText={ajustarCPF}
                         maxLength={14}
-                        keyboardType='numeric' >
+                        keyboardType='numeric' 
+                        placeholder='000.000.000-00'
+                        value={cpf}>
 
                     </TextInput>
 
@@ -216,7 +219,9 @@ const TelaCadCli = ({ navigation, route }: CadCliProps) => {
                     <TextInput style={styles.caixa_texto}
                         onChangeText={ajustaData}
                         maxLength={10}
-                        keyboardType='numeric'>
+                        keyboardType='numeric'
+                        placeholder='DD/MM/AAAA'
+                        value={dataNasc}>
 
                     </TextInput>
                 </View>
@@ -243,10 +248,15 @@ export default TelaCadCli;
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 40,
+        paddingTop: 20,
+        paddingBottom: 25,
         flex: 1,
         backgroundColor: '#1c62be',
-        paddingBottom: 100,
+    },
+    container_header: {
+        flex: 1,
+        backgroundColor: '#164d96',
+        paddingBottom: 40,
     },
     caixas: {
         alignItems: 'center',
@@ -254,28 +264,11 @@ const styles = StyleSheet.create({
     caixa_botao: {
         paddingTop: 15,
     },
-    container_header: {
-        flex: 1,
-        backgroundColor: '#164d96',
-        paddingBottom: 60,
-    },
     titulo: {
-        paddingTop: 55,
+        paddingTop: 35,
         color: 'white',
         fontSize: 35,
         textAlign: 'center',
-    },
-    botao: {
-        backgroundColor: 'blue',
-        paddingVertical: 20,
-        marginTop: 20,
-        borderRadius: 10,
-        marginHorizontal: 70,
-    },
-    desc_botao: {
-        textAlign: 'center',
-        fontSize: 25,
-        color: 'white'
     },
     titulo_caixa_texto: {
         paddingTop: 10,
@@ -290,5 +283,18 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         margin: 3,
         backgroundColor: 'white',
+    },
+    botao: {
+        justifyContent: 'center',
+        backgroundColor: 'blue',
+        paddingVertical: 15,
+        marginTop: 25,
+        borderRadius: 10,
+        marginHorizontal: 70,
+    },
+    desc_botao: {
+        fontSize: 20,
+        color: 'white',
+        textAlign: 'center',
     },
 });

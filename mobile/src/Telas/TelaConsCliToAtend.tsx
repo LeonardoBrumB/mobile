@@ -21,23 +21,15 @@ const ItemCliente = (props: ClienteProps) => {
 
             <View style={styles.container_card}>
                 <View style={styles.card}>
-                    <View style={styles.dados_card}>
-                        <Text style={{ fontSize: 35 }}>
+                    <Pressable
+                        onPress={() => props.onAtend(props.cliente.id!)}>
+                        <Text style={{ fontSize: 25 }}>
                             {props.numero + 1 + ' - ' + props.cliente.nome}
                         </Text>
-                        <Text style={{ fontSize: 20 }}>{props.cliente.cpf}</Text>
-                    </View>
+                        <Text style={{ fontSize: 15 }}>{props.cliente.cpf}</Text>
 
-                    <View style={styles.botao_atend}>
-                        <Pressable
-                            onPress={() => props.onAtend(props.cliente.id!)}>
-                            <Text style={styles.texto_botao_card}>
-                                A
-                            </Text>
-                        </Pressable>
-                    </View>
+                    </Pressable>
                 </View>
-
             </View>
         </ScrollView>
     );
@@ -125,17 +117,18 @@ const styles = StyleSheet.create({
     container_header: {
         flex: 1,
         backgroundColor: '#164d96',
-        paddingBottom: 50,
+        paddingBottom: 30,
     },
     titulo: {
-        fontSize: 40,
+        fontSize: 30,
         textAlign: 'center',
         color: 'white',
-        paddingTop: 40,
+        paddingTop: 20,
     },
     card: {
         borderWidth: 2,
         borderColor: 'grey',
+        marginHorizontal: 20,
         margin: 5,
         marginTop: 25,
         borderRadius: 10,
@@ -143,26 +136,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: 'white'
     },
-    dados_card: {
-        flex: 1
-    },
-    botao_atend: {
-        backgroundColor: 'green',
-        width: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    texto_botao_card: {
-        fontWeight: "bold",
-        fontSize: 40,
-        color: 'black'
-    },
     botao: {
         backgroundColor: 'blue',
-        paddingVertical: 20,
+        paddingVertical: 15,
         marginTop: 20,
         borderRadius: 10,
-        marginHorizontal: 70,
+        marginHorizontal: 90,
     },
     desc_botao: {
         textAlign: 'center',

@@ -52,47 +52,115 @@ const TelaAltCli = ({ navigation, route }: AltCliProps) => {
     function alterar() {
         setIsCarregando(true);
 
-        firestore()
-            .collection('cliente')
-            .doc(id)
-            .update({
-                nome,
-                cpf,
-                rua,
-                numero,
-                bairro,
-                complemento,
-                cidade,
-                estado,
-                dataNasc,
-                created_at: firestore.FieldValue.serverTimestamp()
-            })
-            .then(() => {
-                Alert.alert("Cliente", "Alterado com sucesso")
-                navigation.goBack();
-            })
-            .catch((error) => console.log(error))
-            .finally(() => setIsCarregando(false));
+        if (verificaCampos()) {
+            firestore()
+                .collection('cliente')
+                .doc(id)
+                .update({
+                    nome,
+                    cpf,
+                    rua,
+                    numero,
+                    bairro,
+                    complemento,
+                    cidade,
+                    estado,
+                    dataNasc,
+                    created_at: firestore.FieldValue.serverTimestamp()
+                })
+                .then(() => {
+                    Alert.alert("Cliente", "Alterado com sucesso")
+                    navigation.goBack();
+                })
+                .catch((error) => console.log(error))
+                .finally(() => setIsCarregando(false));
+        }
+        setIsCarregando(false);
     }
 
-    const formataCpf = (text: string) => {
-        let cpfFormat = text.replace(/\D/g, '');
+    function verificaCampos() {
+        if (nome == '') {
+            Alert.alert("Nome em branco",
+                "Digite um nome")
+            return false;
+        }
+        if (cpf == '') {
+            Alert.alert("Cpf em branco",
+                "Digite um Cpf")
+            return false;
+        }
+        if (rua == '') {
+            Alert.alert("rua em branco",
+                "Digite uma rua")
+            return false;
+        }
+        if (numero == '') {
+            Alert.alert("numero em branco",
+                "Digite um numero")
+            return false;
+        }
+        if (bairro == '') {
+            Alert.alert("Bairro em branco",
+                "Digite um bairro")
+            return false;
+        }
+        if (cidade == '') {
+            Alert.alert("Cidade em branco",
+                "Digite uma cidade")
+            return false;
+        }
+        if (estado == '') {
+            Alert.alert("Estado em branco",
+                "Digite um estado")
+            return false;
+        }
+        if (dataNasc == '') {
+            Alert.alert("Data de nascimento em branco",
+                "Digite uma data de nascimento")
+            return false;
+        }
 
-        if (cpfFormat.length > 3) {
-            cpfFormat = cpfFormat.replace(/^(\d{3})(\d)/g, '$1.$2');
-            if (cpfFormat.length > 7) {
-                cpfFormat = cpfFormat.replace(/^(\d{3})\.(\d{3})(\d)/g, '$1.$2.$3');
-                if (cpfFormat.length > 11) {
-                    cpfFormat = cpfFormat.replace(/^(\d{3})\.(\d{3})\.(\d{ 3})(\d)/g, '$1.$2.$3-$4');
+        return true;
+    }
+
+    const formatarCPF = (text: string) => {
+        let cpfFormatado = text.replace(/\D/g, '');
+
+        if (cpfFormatado.length > 3) {
+            cpfFormatado = cpfFormatado.replace(/^(\d{3})(\d)/g, '$1.$2');
+            if (cpfFormatado.length > 7) {
+                cpfFormatado = cpfFormatado.replace(/^(\d{3}).(\d{3})(\d)/g, '$1.$2.$3');
+                if (cpfFormatado.length > 11) {
+                    cpfFormatado = cpfFormatado.replace(/^(\d{3}).(\d{3}).(\d{3})(\d)/g, '$1.$2.$3-$4');
                 }
             }
         }
-        return cpfFormat.substring(0, 14);
-    }
+
+        return cpfFormatado.substring(0, 14);
+    };
 
     const ajustaCpf = (text: string) => {
-        const cpfFormatado = formataCpf(text);
+        const cpfFormatado = formatarCPF(text);
         setCpf(cpfFormatado);
+    }
+
+    const formatarData = (text: string) => {
+        let dataFormatado = text.replace(/\D/g, '');
+
+        if (dataFormatado.length > 2) {
+            dataFormatado = dataFormatado.replace(/^(\d{2})(\d)/g, '$1/$2');
+            if (dataFormatado.length > 6) {
+                dataFormatado = dataFormatado.replace(/^(\d{2}).(\d{2})(\d)/g, '$1/$2/$3');
+
+            }
+        }
+
+        return dataFormatado.substring(0, 10);
+    };
+
+    const ajustaData = (text: string) => {
+        const dataFormatado = formatarData(text);
+        setDataNasc(dataFormatado);
     }
 
     return (
@@ -182,13 +250,13 @@ const TelaAltCli = ({ navigation, route }: AltCliProps) => {
 
                     <Text
                         style={styles.titulo_caixa_texto}>
-                        Numero:
+                        Data de nascimento:
                     </Text>
                     <TextInput
                         style={styles.caixa_texto}
-                        value={numero}
-                        maxLength={8}
-                        onChangeText={(text) => { setNumero(text.toString()) }}
+                        value={dataNasc}
+                        maxLength={10}
+                        onChangeText={ajustaData}
                         keyboardType="numeric" />
                 </View>
                 <View style={styles.caixa_botao}>
@@ -214,10 +282,10 @@ export default TelaAltCli;
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 40,
+        paddingTop: 20,
         flex: 1,
         backgroundColor: '#1c62be',
-        paddingBottom: '100%',
+        paddingBottom: 20,
     },
     caixas: {
         alignItems: 'center',
@@ -228,10 +296,10 @@ const styles = StyleSheet.create({
     container_header: {
         flex: 1,
         backgroundColor: '#164d96',
-        paddingBottom: 60,
+        paddingBottom: 40,
     },
     titulo: {
-        paddingTop: 55,
+        paddingTop: 35,
         color: 'white',
         fontSize: 35,
         textAlign: 'center',
@@ -239,7 +307,7 @@ const styles = StyleSheet.create({
     botao: {
         backgroundColor: 'blue',
         paddingVertical: 20,
-        marginTop: 20,
+        marginTop: 25,
         borderRadius: 10,
         marginHorizontal: 70,
     },
@@ -249,10 +317,10 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     titulo_caixa_texto: {
-        paddingTop: 10,
+        paddingTop: 15,
         fontSize: 25,
         color: 'black',
-        paddingBottom: 10,
+        paddingBottom: 5,
     },
     caixa_texto: {
         alignItems: 'center',

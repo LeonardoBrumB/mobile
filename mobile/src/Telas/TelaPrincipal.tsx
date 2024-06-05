@@ -8,7 +8,7 @@ const TelaPrincipal = ({ navigation, route }: PrincipalProps) => {
         <ScrollView>
             <View style={styles.container_header}>
                 <Text style={styles.titulo}>
-                    Título
+                    Bem vindo!
                 </Text>
             </View>
             <View style={styles.container}>
@@ -43,32 +43,34 @@ export default TelaPrincipal;
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 40,
+        paddingTop: 20,
+        paddingBottom: '80%',
         flex: 1,
-        backgroundColor: '#1c62be',
-        paddingBottom: 220,
+        backgroundColor: '#1c62be'
+
     },
     container_header: {
         flex: 1,
         backgroundColor: '#164d96',
-        paddingBottom: 80,
+        paddingBottom: 40,
     },
     titulo: {
-        paddingTop: 55,
+        paddingTop: 35,
         color: 'white',
-        fontSize: 45,
-        marginLeft: 40,
+        fontSize: 35,
+        textAlign: 'center',
     },
     botao: {
+        justifyContent: 'center',
         backgroundColor: 'blue',
-        paddingVertical: 20,
-        marginTop: 20,
+        paddingVertical: 15,
+        marginTop: 25,
         borderRadius: 10,
-        marginHorizontal: 70,
+        marginHorizontal: 50,
     },
     desc_botao: {
+        fontSize: 20,
+        color: 'white',
         textAlign: 'center',
-        fontSize: 25,
-        color: 'white'
     },
 });

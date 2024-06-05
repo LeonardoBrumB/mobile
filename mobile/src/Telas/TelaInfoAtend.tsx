@@ -1,139 +1,146 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Pressable, ScrollView, TextInput, Alert, FlatList } from 'react-native';
-import { InfoAtendProps, InfoCliProps } from '../navigation/HomeNavigator';
-import Carregamento from '../navigation/Carregamento';
+import { useEffect, useState } from "react";
+import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+
 import firestore from "@react-native-firebase/firestore";
-import { Atendimento } from '../Model/Atendimento';
+import Carregamento from "../navigation/Carregamento";
+import { InfoAtendProps } from "../navigation/HomeNavigator";
+import { Atendimento } from "../Model/Atendimento";
+import { Cliente } from "../Model/Cliente";
 
-type AtendimentoProps = {
-    numero: number;
-    atendimento: Atendimento;
-    onAlterar: (id: string) => void;
-    onVoltar: (id: string) => void;
-}
 
-const ItemAtendimento = (props: AtendimentoProps) => {
-    const [id,] = useState('');
-    const [nome,] = useState('');
-    const [cpf,] = useState('');
-    const [data,] = useState('');
-    const [hora,] = useState('');
-    const [descricao,] = useState('');
-    const [isCarregando,] = useState(false);
+const TelaInfoAtend = ({ navigation, route }: InfoAtendProps) => {
+    const [id,] = useState(route.params.id);
+    const [nome, setNome] = useState('');
+    const [Cliente, setCliente] = useState([] as Cliente[]);
+    const [Atendimento, setAtendimento] = useState([] as Atendimento[]);
+    const [cpf, setCpf] = useState('');
+    const [data, setData] = useState('');
+    const [hora, setHora] = useState('');
+    const [descricao, setDescricao] = useState('');
+    const [isCarregando, setIsCarregando] = useState(false);
+
+    async function carregar_() {
+        setIsCarregando(true);
+        const resultado = await firestore()
+            .collection('cliente')
+            .doc(id)
+            .get();
+
+        const cliente = {
+            id: resultado.id,
+            ...resultado.data()
+        } as Cliente;
+
+        setNome(cliente.nome);
+        setCpf(cliente.cpf);
+        setIsCarregando(false);
+    };
+
+    useEffect(() => {
+        carregar_();
+    }, []);
+
+    async function carregar() {
+        setIsCarregando(true);
+        const resultado = await firestore()
+            .collection('Atendimento')
+            .doc(id)
+            .get();
+
+        const atendimento = {
+            id: resultado.id,
+            ...resultado.data()
+        } as Atendimento;
+
+        setData(atendimento.data);
+        setHora(atendimento.hora);
+        setDescricao(atendimento.descricao);
+        setIsCarregando(false);
+    };
+
+    useEffect(() => {
+        carregar();
+    }, []);
 
 
     return (
         <ScrollView>
-            <View style={styles.container_header}>
-                <Text style={styles.titulo}>
-                    Informação do atendimento
-                </Text>
+            <View
+                style={styles.container_header}>
+                <Carregamento isCarregando={isCarregando} />
+                <Text style={styles.titulo}>Informações do atendimento de {nome}</Text>
             </View>
             <View style={styles.container}>
                 <View style={styles.caixas}>
-                    <Text style={styles.titulo_caixa_texto}>
+
+                    <Text
+                        style={styles.titulo_caixa_texto}>
                         Nome:
                     </Text>
-                    <Text style={styles.caixa_texto}>
+                    <Text
+                        style={styles.caixa_texto}>
                         {nome}
                     </Text>
 
-                    //////////
-
-                    <Text style={styles.titulo_caixa_texto}>
+                    <Text
+                        style={styles.titulo_caixa_texto}>
                         Cpf:
                     </Text>
-                    <Text style={styles.caixa_texto}>
+                    <Text
+                        style={styles.caixa_texto}>
                         {cpf}
                     </Text>
 
-                    //////////
-
-                    <Text style={styles.titulo_caixa_texto}>
+                    <Text
+                        style={styles.titulo_caixa_texto}>
                         Data:
                     </Text>
-                    <Text style={styles.caixa_texto}>
+                    <Text
+                        style={styles.caixa_texto}>
                         {data}
                     </Text>
 
-                    //////////
-
-                    <Text style={styles.titulo_caixa_texto}>
+                    <Text
+                        style={styles.titulo_caixa_texto}>
                         Hora:
                     </Text>
-                    <Text style={styles.caixa_texto}>
+                    <Text
+                        style={styles.caixa_texto}>
                         {hora}
                     </Text>
 
-                    //////////
 
-                    <Text style={styles.titulo_caixa_texto}>
+                    <Text
+                        style={styles.titulo_caixa_texto}>
                         Descrição:
                     </Text>
-                    <Text style={styles.caixa_texto}>
+                    <Text
+                        style={styles.caixa_texto}>
                         {descricao}
                     </Text>
 
                 </View>
                 <View style={styles.caixa_botao}>
                     <Pressable
-                        style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                        onPress={() => props.onAlterar(props.atendimento.id!)}
+                        style={styles.botao}
+                        onPress={() => { navigation.goBack() }}
                         disabled={isCarregando}>
-                        <Text style={styles.desc_botao}>Alterar</Text>
-                    </Pressable>
-
-                    <Pressable
-                        style={(state) => [styles.botao, state.pressed ? { opacity: 0.5 } : null]}
-                        onPress={() => props.onVoltar(props.atendimento.id)}>
-                        <Text style={styles.desc_botao}>voltar</Text>
+                        <Text style={styles.desc_botao}>Voltar</Text>
                     </Pressable>
                 </View>
             </View>
         </ScrollView >
     );
-
-}
-
-
-const TelaInfoAtend = ({ navigation, route }: InfoAtendProps) => {
-    const [isCarregando,] = useState(false);
-    const [cliente,] = useState([] as Atendimento[]);
-
-
-    function alterarCliente(id: string) {
-        navigation.navigate("TelaAltCli", { id: id })
-    }
-    function voltar() {
-        navigation.navigate("TelaConsCli")
-    }
-
-    return (
-        <View style={styles.container}>
-            <Carregamento isCarregando={isCarregando} />
-            <FlatList
-                data={cliente}
-                renderItem={(info) =>
-                    <ItemAtendimento
-                        numero={info.index}
-                        atendimento={info.item}
-                        onAlterar={alterarCliente}
-                        onVoltar={voltar} />}>
-
-            </FlatList>
-        </View>
-    );
-
 }
 
 export default TelaInfoAtend;
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 40,
+        paddingTop: 10,
         flex: 1,
         backgroundColor: '#1c62be',
-        paddingBottom: 100,
+        paddingBottom: 25,
     },
     caixas: {
         alignItems: 'center',
@@ -144,10 +151,10 @@ const styles = StyleSheet.create({
     container_header: {
         flex: 1,
         backgroundColor: '#164d96',
-        paddingBottom: 60,
+        paddingBottom: 40,
     },
     titulo: {
-        paddingTop: 55,
+        paddingTop: 35,
         color: 'white',
         fontSize: 35,
         textAlign: 'center',
@@ -155,7 +162,7 @@ const styles = StyleSheet.create({
     botao: {
         backgroundColor: 'blue',
         paddingVertical: 20,
-        marginTop: 20,
+        marginTop: 30,
         borderRadius: 10,
         marginHorizontal: 70,
     },
@@ -165,17 +172,17 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     titulo_caixa_texto: {
-        paddingTop: 10,
+        marginTop: 30,
         fontSize: 25,
         color: 'black',
         paddingBottom: 10,
     },
     caixa_texto: {
+        alignItems: 'center',
         width: '70%',
         color: 'black',
-        borderWidth: 1,
-        borderRadius: 4,
         margin: 3,
         backgroundColor: 'white',
+        fontSize: 20,
     },
 });
