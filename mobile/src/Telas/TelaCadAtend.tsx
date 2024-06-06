@@ -20,7 +20,10 @@ const TelaCadAtend = ({ navigation, route }: CadAtendProps) => {
         if (dataFormatada.length > 2) {
             dataFormatada = dataFormatada.replace(/^(\d{2})(\d)/g, '$1/$2');
             if (dataFormatada.length > 5) {
-                dataFormatada = dataFormatada.replace(/^(\d{2})\/(\d{2})(\d)/g, '$1/$2');
+                dataFormatada = dataFormatada.replace(/^(\d{2})\/(\d{2})(\d)/g, '$1/$2/');
+                if (dataFormatada.length > 5) {
+                    dataFormatada = dataFormatada.replace(/^(\d{2})\/(\d{2})(\d{4})(\d)/g, '$1/$2/$3');
+                }
             }
         }
 
@@ -31,6 +34,8 @@ const TelaCadAtend = ({ navigation, route }: CadAtendProps) => {
         const dataFormatada = formatarData(text);
         setData(dataFormatada);
     };
+
+
     const formatarHora = (text: string) => {
         let horaFormatada = text.replace(/\D/g, '');
 
